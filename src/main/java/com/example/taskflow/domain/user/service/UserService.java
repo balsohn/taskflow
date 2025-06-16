@@ -1,16 +1,12 @@
 package com.example.taskflow.domain.user.service;
 
 import com.example.taskflow.domain.user.dto.UserRequestDto;
-import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.entity.User;
-import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +23,6 @@ public class UserService {
 
         User saveUser = userRepository.save(user);
 
-        ApiResponse<User> successResponse = ApiResponse.success("회원가입이 완료되었습니다.", saveUser);
-
-        return successResponse;
+        return ApiResponse.success("회원가입이 완료되었습니다.", saveUser);
     }
 }
