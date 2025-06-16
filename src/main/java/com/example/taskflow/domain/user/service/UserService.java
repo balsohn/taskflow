@@ -3,6 +3,7 @@ package com.example.taskflow.domain.user.service;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
 import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.entity.User;
+import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +18,17 @@ import java.time.LocalDateTime;
 public class UserService {
     private final UserRepository userRepository;
 
-
     // 유저 생성
     public ApiResponse signup(UserRequestDto userRequestDto) {
 
         // TODO : 비밀번호 암호화 필요
-        log.info(userRequestDto.getUsername());
-        log.info(userRequestDto.getEmail());
-        log.info(userRequestDto.getName());
-        log.info(userRequestDto.getPassword());
 
-        User user = new User(userRequestDto.getUsername(), userRequestDto.getName(), userRequestDto.getPassword(), userRequestDto.getEmail());
-
-
+        User user = new User(userRequestDto.getUsername(), userRequestDto.getPassword(), userRequestDto.getEmail(),userRequestDto.getName(),userRequestDto.getRole());
 
         User saveUser = userRepository.save(user);
 
-        return new ApiResponse<>(true, "sert",userRequestDto);
+        ApiResponse<User> successResponse = ApiResponse.success("회원가입이 완료되었습니다.", saveUser);
+
+        return successResponse;
     }
 }
