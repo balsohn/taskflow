@@ -1,5 +1,6 @@
 package com.example.taskflow.global.common.filter;
 
+
 import com.example.taskflow.global.common.utils.JwtUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -32,7 +33,7 @@ public class JwtFilter implements Filter {
         String authorizationHeader = httpRequest.getHeader("Authorization");
 
         // 처음 로그인 하는 거야? 그럼 JWT 토큰이 없을 것이니 토큰 먼저 발급 받아!
-        if(requestURI.equals("/api/users")) {
+        if(requestURI.equals("/api/users") || requestURI.equals("/api/users/login")) {
             chain.doFilter(request,response);
             return;
         }
@@ -62,7 +63,7 @@ public class JwtFilter implements Filter {
         username = jwtUtil.extractUsername(jwt);
 
         // JWT 사용자 권한을 확인
-        String auth = jwtUtil.extractRoles(jwt);
+//        String auth = jwtUtil.extractRoles(jwt);
 //        UserRoleEnum userRole = UserRoleEnum.valueOf(auth);
 //        User user = new User(username,"", List.of(userRole::getRole));
 //

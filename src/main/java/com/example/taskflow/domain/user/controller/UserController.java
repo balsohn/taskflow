@@ -1,7 +1,7 @@
 package com.example.taskflow.domain.user.controller;
 
+import com.example.taskflow.domain.user.dto.LoginRequestDto;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
-import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.service.UserService;
 import com.example.taskflow.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +19,21 @@ public class UserController {
 
     private final UserService userService;
 
+    // 회원가입
     @PostMapping
-    public ResponseEntity<ApiResponse> signup(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserRequestDto userRequestDto){
 
-        ApiResponse signupDto = userService.signup(userRequestDto);
+        ApiResponse signupDto = userService.createUser(userRequestDto);
 
         return new ResponseEntity<>(signupDto, HttpStatus.CREATED);
     }
 
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
+
+        ApiResponse login = userService.login(loginRequestDto);
+
+        return new ResponseEntity<>(login,HttpStatus.OK);
+    }
 }
