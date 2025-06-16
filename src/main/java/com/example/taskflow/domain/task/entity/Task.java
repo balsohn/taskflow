@@ -2,6 +2,7 @@ package com.example.taskflow.domain.task.entity;
 
 import com.example.taskflow.domain.task.enums.Priority;
 import com.example.taskflow.domain.task.enums.Status;
+import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
