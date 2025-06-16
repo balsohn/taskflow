@@ -1,12 +1,15 @@
 package com.example.taskflow.domain.task.dto.response;
 
+import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.enums.Priority;
 import com.example.taskflow.domain.task.enums.Status;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 public class TaskResponseDto {
 
@@ -16,21 +19,23 @@ public class TaskResponseDto {
     private final Priority priority;
     private final LocalDate dueDate;
     private final Status status;
-    private final Boolean isDeleted;
+    private final LocalDateTime startedAt;
     private final LocalDateTime createdAt;
     private final UserInfo creator;
     private final UserInfo assignee;
 
-    public TaskResponseDto(Long id, String title, String description, Priority priority, LocalDate dueDate, Status status, Boolean isDeleted, LocalDateTime createdAt, UserInfo creator, UserInfo assignee) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.status = status;
-        this.isDeleted = isDeleted;
-        this.createdAt = createdAt;
-        this.creator = creator;
-        this.assignee = assignee;
+    public static TaskResponseDto fromEntity(Task task) {
+        return TaskResponseDto.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .priority(task.getPriority())
+                .dueDate(task.getDueDate())
+                .status(task.getStatus())
+                .startedAt(task.getStartedAt())
+                .createdAt(task.getCreatedAt())
+                .creator(UserInfo.fromUser(task.getCreator()))
+                .assignee(UserInfo.fromUser(task.getAssignee()))
+                .build();
     }
 }

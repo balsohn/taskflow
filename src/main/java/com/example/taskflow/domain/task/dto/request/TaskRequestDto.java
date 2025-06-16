@@ -2,6 +2,7 @@ package com.example.taskflow.domain.task.dto.request;
 
 import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.enums.Priority;
+import com.example.taskflow.domain.task.enums.Status;
 import com.example.taskflow.domain.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

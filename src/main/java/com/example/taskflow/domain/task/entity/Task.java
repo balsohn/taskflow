@@ -33,7 +33,7 @@ public class Task extends BaseTimeEntity {
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.TODO;
 
     private LocalDateTime startedAt;
 
@@ -46,13 +46,20 @@ public class Task extends BaseTimeEntity {
     private User assignee;
 
     @Builder
-    public Task(String title, String description, Priority priority, LocalDate dueDate, Status status, User creator, User assignee) {
+    public Task(String title, String description, Priority priority, LocalDate dueDate, User creator, User assignee) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
-        this.status = status;
         this.creator = creator;
         this.assignee = assignee;
+    }
+
+    public void recordStartedAt() {
+        this.startedAt = LocalDateTime.now();
+    }
+
+    public void changeStatus(Status status) {
+        this.status = status;
     }
 }
