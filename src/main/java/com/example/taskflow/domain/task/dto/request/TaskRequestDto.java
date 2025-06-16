@@ -29,12 +29,13 @@ public class TaskRequestDto {
         this.dueDate = dueDate;
     }
 
-    public static Task toEntity(TaskRequestDto dto, User assignee) {
+    public static Task toEntity(TaskRequestDto dto, User creator, User assignee) {
         return Task.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .priority(dto.getPriority())
                 .dueDate(dto.getDueDate())
+                .creator(creator)
                 .assignee(assignee)
                 .build();
     }

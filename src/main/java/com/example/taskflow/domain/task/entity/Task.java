@@ -62,4 +62,9 @@ public class Task extends BaseTimeEntity {
     public void changeStatus(Status status) {
         this.status = status;
     }
+
+    // 테스트용
+    public void setId(long l) {
+        this.id = l;
+    }
 }
