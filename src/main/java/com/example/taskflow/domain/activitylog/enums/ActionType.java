@@ -1,4 +1,4 @@
-package com.example.taskflow.domain.activitylog.entity;
+package com.example.taskflow.domain.activitylog.enums;
 
 /**
  * 활동 로그의 액션 타입을 정의하는 Enum

@@ -1,4 +1,4 @@
-package com.example.taskflow.domain.activitylog.entity;
+package com.example.taskflow.domain.activitylog.enums;
 
 public enum EntityType {
     TASK("태스크"),
