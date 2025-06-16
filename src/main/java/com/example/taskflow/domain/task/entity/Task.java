@@ -20,7 +20,7 @@ public class Task extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long taskId;
 
     private String title;
 
