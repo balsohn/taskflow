@@ -1,5 +1,7 @@
 package com.example.taskflow.domain.activitylog.entity;
 
+import com.example.taskflow.domain.activitylog.enums.ActionType;
+import com.example.taskflow.domain.activitylog.enums.EntityType;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
