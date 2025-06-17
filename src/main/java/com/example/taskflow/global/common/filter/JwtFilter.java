@@ -2,7 +2,6 @@ package com.example.taskflow.global.common.filter;
 
 
 import com.example.taskflow.domain.user.enums.UserRoleEnum;
-import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.utils.JwtUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Component;
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

@@ -9,10 +9,9 @@ import com.example.taskflow.global.common.ApiResponse;
 import com.example.taskflow.global.common.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +26,11 @@ public class UserService {
     public ApiResponse createUser(UserRequestDto userRequestDto) {
 
         if(userRepository.existsByUsername(userRequestDto.getUsername())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"중복된 username이 있습니다.");
+            return ApiResponse.error("중복된 Username이 있습니다");
         }
 
         if(userRepository.existsByemail(userRequestDto.getEmail())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"중복된 email이 있습니다.");
+            return ApiResponse.error("중복된 Email이 있습니다.");
         }
 
         String encodePassword = passwordEncoder.encode(userRequestDto.getPassword());
@@ -56,7 +55,7 @@ public class UserService {
         User user = userRepository.findByUsernameOrElseThrow(loginRequestDto.getUsername());
 
         if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
-            throw new IllegalArgumentException("잘못된 사용자명 또는 비밀번호입니다");
+            return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
