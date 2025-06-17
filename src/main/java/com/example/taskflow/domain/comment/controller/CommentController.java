@@ -27,13 +27,13 @@ public class CommentController {
                 commentService.singup(id,commentRequestDto.getDetail())), HttpStatus.OK);
 
     }
-    @GetMapping()
-    public ResponseEntity<ApiResponse<List<findUserNameResponseDto>>> findUserName
-            (@Valid @RequestBody
-             findUserNameRequestDto findUserNameRequestDto) {
-        List<findUserNameResponseDto> responseDtoList =
-                commentService.findUserNameList(findUserNameRequestDto.getUserName());
-
-    }
+//    @GetMapping()
+//    public ResponseEntity<ApiResponse<List<findUserNameResponseDto>>> findUserName
+//            (@Valid @RequestBody
+//             findUserNameRequestDto findUserNameRequestDto) {
+//        List<findUserNameResponseDto> responseDtoList =
+//                commentService.findUserNameList(findUserNameRequestDto.getUserName());
+//
+//    }
 
 }

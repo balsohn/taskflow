@@ -29,7 +29,7 @@ public class CommentService extends BaseTimeEntity {
         User user = userRepository.findByUserId(id);
         int taskId = 1;
 
-        Comment comment = new Comment(taskId,detail);
+        Comment comment = new Comment(taskId,user,detail);
         Comment createcomment = commentResponse.save(comment);
 
         return new CommentResponseDto(createcomment.getDetail(),user.getName(),createcomment.getTasksId(),
@@ -38,12 +38,12 @@ public class CommentService extends BaseTimeEntity {
 
     }
 
-    public List<findUserNameResponseDto>findUserNameList(String userName,
-                                                         String detail){
-        List<User> userNameList = userRepository.findByName(userName);
-        List<findUserNameResponseDto> userNameResponseDtoList
-
-    }
+//    public List<findUserNameResponseDto>findUserNameList(String userName,
+//                                                         String detail){
+//        List<User> userNameList = userRepository.findByName(userName);
+//        List<findUserNameResponseDto> userNameResponseDtoList
+//
+//    }
 
 
 }

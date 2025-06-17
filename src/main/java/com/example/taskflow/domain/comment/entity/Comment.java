@@ -31,8 +31,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "userId")
     private User user;
 
-    public Comment(int tasksId,String detail){
+    public Comment(int tasksId,User user,String detail){
         //this.task = task;
+        this.user = user;
         this.tasksId = tasksId;
         this.detail = detail;
     }
