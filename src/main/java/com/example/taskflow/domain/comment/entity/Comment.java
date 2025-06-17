@@ -1,6 +1,7 @@
 package com.example.taskflow.domain.comment.entity;
 
 import com.example.taskflow.domain.task.entity.Task;
+import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
-@SQLDelete(sql = "UPDATE comments SET activated = 0 where id = ?")
+@SQLDelete(sql = "UPDATE comments SET isDeleted = true where id = ?")
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -20,15 +21,19 @@ public class Comment extends BaseTimeEntity {
 
     private String detail;
 
-    private int tast;
+    private int tasksId;
 
     @ManyToOne
     @JoinColumn(name = "taskId")
     private Task task;
 
-    public Comment(int tast,String detail){
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    public Comment(int tasksId,String detail){
         //this.task = task;
-        this.tast = tast;
+        this.tasksId = tasksId;
         this.detail = detail;
     }
 
