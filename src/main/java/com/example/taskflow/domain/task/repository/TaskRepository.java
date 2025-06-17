@@ -17,14 +17,17 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @EntityGraph(attributePaths = {"creator", "assignee"})
     @Query("""
-                  SELECT t FROM Task t
-                  WHERE (:status IS NULL OR t.status = :status)
-                  AND (:keyword IS NULL OR t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
+                SELECT t FROM Task t
+                WHERE (:status IS NULL OR t.status = :status)
+                AND (:keyword IS NULL OR t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
             """)
     Page<Task> getTasks(@Param("status") Status status,
                         @Param("keyword") String keyword,
                         Pageable pageable);
 
+    // TODO: 의도한대로 동작하는지 확인
     @EntityGraph(attributePaths = {"creator", "assignee", "comments"})
+    Optional<Task> findByIdWithDetailAndIsDeletedFalse(Long taskId);
+
     Optional<Task> findByIdAndIsDeletedFalse(Long taskId);
 }

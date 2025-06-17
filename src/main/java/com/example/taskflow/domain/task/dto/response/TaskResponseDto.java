@@ -21,6 +21,7 @@ public class TaskResponseDto {
     private final LocalDate dueDate;
     private final LocalDateTime startedAt;
     private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAt;
     private final UserInfo creator;
     private final UserInfo assignee;
 
@@ -34,6 +35,7 @@ public class TaskResponseDto {
                 .dueDate(task.getDueDate())
                 .startedAt(task.getStartedAt())
                 .createdAt(task.getCreatedAt())
+                .modifiedAt(task.getModifiedAt())
                 .creator(UserInfo.fromUser(task.getCreator()))
                 .assignee(UserInfo.fromUser(task.getAssignee()))
                 .build();

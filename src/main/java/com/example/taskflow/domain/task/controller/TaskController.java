@@ -39,4 +39,11 @@ public class TaskController {
     public ResponseEntity<ApiResponse<TaskDetailResponseDto>> getTask(@PathVariable Long taskId) {
         return ResponseEntity.ok(ApiResponse.success("태스크 상세 조회에 성공하였습니다.", taskService.getTask(taskId)));
     }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<ApiResponse<TaskResponseDto>> updateTask(@PathVariable Long taskId,
+                                                                   @Validated @RequestBody TaskRequestDto requestDto) {
+        return ResponseEntity.ok(ApiResponse.success("태스크가 수정되었습니다.", taskService.updateTask(taskId, requestDto)));
+    }
+
 }

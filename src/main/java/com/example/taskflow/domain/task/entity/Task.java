@@ -64,12 +64,20 @@ public class Task extends BaseTimeEntity {
         this.startedAt = LocalDateTime.now();
     }
 
-    public void changeStatus(Status status) {
+    public void updateStatus(Status status) {
         this.status = status;
     }
 
     // 테스트용
     public void setId(long l) {
         this.id = l;
+    }
+
+    public void update(String title, String description, LocalDate dueDate, Priority priority, User assignee) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.assignee = assignee;
     }
 }
