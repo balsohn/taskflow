@@ -15,7 +15,8 @@ public class CommentResponseDto {
     private final String detail;
     @NotBlank
     private final String userName;
-    private final Long taskId;
+    //private final Long taskId;
+    private final int tast;
     private final Boolean isDeleted;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -24,10 +25,11 @@ public class CommentResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime modifiedAt;
 
-    public CommentResponseDto(String detail, String userName, Long taskId, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public CommentResponseDto(String detail, String userName, int tast, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.detail = detail;
         this.userName = userName;
-        this.taskId = taskId;
+        //this.taskId = taskId;
+        this.tast = tast;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;

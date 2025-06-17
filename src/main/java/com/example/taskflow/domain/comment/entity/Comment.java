@@ -20,15 +20,15 @@ public class Comment extends BaseTimeEntity {
 
     private String detail;
 
-    @Column(nullable = false)
-    private String userName;
+    private int tast;
 
     @ManyToOne
     @JoinColumn(name = "taskId")
     private Task task;
 
-    public Comment(Task task,String detail){
-        this.task = task;
+    public Comment(int tast,String detail){
+        //this.task = task;
+        this.tast = tast;
         this.detail = detail;
     }
 
