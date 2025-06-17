@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -20,4 +22,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> getTasks(@Param("status") Status status,
                         @Param("keyword") String keyword,
                         Pageable pageable);
+
+    // TODO
+    @Query("""
+    SELECT
+    """)
+    Optional<Task> findByIdWithComments(@Param("taskId") Long taskId);
 }

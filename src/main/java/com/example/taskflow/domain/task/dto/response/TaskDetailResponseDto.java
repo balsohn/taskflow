@@ -8,10 +8,12 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Builder
 @Getter
-public class TaskResponseDto {
+@Builder
+public class TaskDetailResponseDto {
 
     private final Long id;
     private final String title;
@@ -21,11 +23,14 @@ public class TaskResponseDto {
     private final LocalDate dueDate;
     private final LocalDateTime startedAt;
     private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAt;
     private final UserInfo creator;
     private final UserInfo assignee;
 
-    public static TaskResponseDto fromEntity(Task task) {
-        return TaskResponseDto.builder()
+    private List<CommentInfo> comments;
+
+    public static TaskDetailResponseDto fromEntity(Task task) {
+        return TaskDetailResponseDto.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
@@ -34,8 +39,13 @@ public class TaskResponseDto {
                 .dueDate(task.getDueDate())
                 .startedAt(task.getStartedAt())
                 .createdAt(task.getCreatedAt())
+                .modifiedAt(task.getModifiedAt())
                 .creator(UserInfo.fromUser(task.getCreator()))
                 .assignee(UserInfo.fromUser(task.getAssignee()))
+                .comments(task.getComments().stream()
+                        .filter(comment -> !comment.isDeleted())
+                        .map(CommentInfo::fromComment)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

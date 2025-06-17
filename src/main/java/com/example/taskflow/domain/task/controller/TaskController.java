@@ -1,6 +1,7 @@
 package com.example.taskflow.domain.task.controller;
 
 import com.example.taskflow.domain.task.dto.request.TaskRequestDto;
+import com.example.taskflow.domain.task.dto.response.TaskDetailResponseDto;
 import com.example.taskflow.domain.task.dto.response.TaskResponseDto;
 import com.example.taskflow.domain.task.enums.Status;
 import com.example.taskflow.domain.task.service.TaskService;
@@ -34,4 +35,8 @@ public class TaskController {
         return ResponseEntity.ok(ApiResponse.success("태스크 목록 조회에 성공하였습니다.", taskService.getTasks(status, keyword, page, size)));
     }
 
+    @GetMapping("/{taskId}")
+    public ResponseEntity<ApiResponse<TaskDetailResponseDto>> getTask(@PathVariable Long taskId) {
+        return ResponseEntity.ok(ApiResponse.success("태스크 상세 조회에 성공하였습니다.", taskService.getTask(taskId)));
+    }
 }

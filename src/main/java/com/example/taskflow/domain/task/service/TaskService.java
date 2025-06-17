@@ -1,12 +1,14 @@
 package com.example.taskflow.domain.task.service;
 
 import com.example.taskflow.domain.task.dto.request.TaskRequestDto;
+import com.example.taskflow.domain.task.dto.response.TaskDetailResponseDto;
 import com.example.taskflow.domain.task.dto.response.TaskResponseDto;
 import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.enums.Status;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.global.common.dto.PageResponse;
+import com.example.taskflow.global.exception.custom.TaskNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,5 +48,12 @@ public class TaskService {
 
 //        return PageResponse.of(responseDtos.getContent(), responseDtos);
         return PageResponse.of(tasks, TaskResponseDto::fromEntity);
+    }
+
+    public TaskDetailResponseDto getTask(Long taskId) {
+        Task foundTask = taskRepository.findByIdWithComments(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("존재하지 않는 태스크입니다."));
+
+        return TaskDetailResponseDto.fromEntity(foundTask);
     }
 }
