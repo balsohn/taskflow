@@ -4,10 +4,22 @@ import com.example.taskflow.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
+import java.util.Optional;
+
 @Repository
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+
+    default User findByUsernameOrElseThrow(String username){
+       return findByUsername(username).orElseThrow(()->new IllegalArgumentException("아이디를 찾지 못했습니다"));
+    }
+
+    // username 중복 검증
+    boolean existsByUsername(String username);
 
     User findByUserId(Long Id);
-
+ 
+    boolean existsByemail(String email);
 }
