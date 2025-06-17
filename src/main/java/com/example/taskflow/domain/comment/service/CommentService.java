@@ -1,37 +1,47 @@
 package com.example.taskflow.domain.comment.service;
 
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
+import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
 import com.example.taskflow.domain.comment.entity.Comment;
-import com.example.taskflow.domain.task.entity.Task;
+import com.example.taskflow.domain.comment.response.CommentResponse;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
+import com.example.taskflow.global.common.BaseTimeEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
-public class CommentService {
-   private final UserRepository userRepository;
+public class CommentService extends BaseTimeEntity {
+    private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final CommentResponse commentResponse;
 
 
     @Transactional
-    public CommentResponseDto singup(Long taskId,String detail) {
+    public CommentResponseDto singup(Long id,String detail) {
 
-        //Task tasksId = taskRepository.findByTaskId(taskId);
-        //User users = userRepository.findByUserId(taskId);
+        User user = userRepository.findByUserId(id);
+        int taskId = 1;
 
-        //users.setName("이형준");
-        String Name = "이형준";
-        int id = 1;
+        Comment comment = new Comment(taskId,detail);
+        Comment createcomment = commentResponse.save(comment);
 
-        Comment comment = new Comment(id,detail);
+        return new CommentResponseDto(createcomment.getDetail(),user.getName(),createcomment.getTasksId(),
+                createcomment.getIsDeleted(),createcomment.getCreatedAt(),createcomment.getModifiedAt());
 
-        return new CommentResponseDto(comment.getDetail(),Name,comment.getTast(),
-                comment.getIsDeleted(),comment.getCreatedAt(),comment.getModifiedAt());
+
+    }
+
+    public List<findUserNameResponseDto>findUserNameList(String userName,
+                                                         String detail){
+        List<User> userNameList = userRepository.findByName(userName);
+        List<findUserNameResponseDto> userNameResponseDtoList
 
     }
 

@@ -10,26 +10,25 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
 
-    @Size(min = 5,max = 30,message = "댓글은 5자이상 30자 이하로 입력해주세요.")
     @NotBlank
     private final String detail;
     @NotBlank
     private final String userName;
     //private final Long taskId;
-    private final int tast;
+    private final int taskId;
     private final Boolean isDeleted;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime createdAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime modifiedAt;
 
-    public CommentResponseDto(String detail, String userName, int tast, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public CommentResponseDto(String detail, String userName, int taskId, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.detail = detail;
         this.userName = userName;
         //this.taskId = taskId;
-        this.tast = tast;
+        this.taskId = taskId;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
