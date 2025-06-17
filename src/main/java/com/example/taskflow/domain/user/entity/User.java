@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +23,7 @@ public class User extends BaseTimeEntity {
 
     // 로그인할때 쓸 아이디
     @NotBlank
+    @Column(unique = true)
     private String username;
 
     @NotEmpty
@@ -34,10 +34,6 @@ public class User extends BaseTimeEntity {
 
     @Email
     @Column(unique = true)
-    @Pattern(
-            regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-            message = "유효한 이메일 형식이 아닙니다."
-    )
     private String email;
 
     @Column
