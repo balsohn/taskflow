@@ -1,5 +1,6 @@
 package com.example.taskflow.domain.user.entity;
 
+import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -12,7 +13,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 public class User extends BaseTimeEntity {
@@ -25,7 +26,6 @@ public class User extends BaseTimeEntity {
     @NotBlank
     private String username;
 
-
     @NotEmpty
     private String name;
 
@@ -35,12 +35,21 @@ public class User extends BaseTimeEntity {
     @Email
     @Column(unique = true)
     @Pattern(
-            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+            regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             message = "유효한 이메일 형식이 아닙니다."
     )
     private String email;
 
     @Column
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+    public User(String username, String password, String email, String name, UserRoleEnum role) {
+        this.username = username;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 }
 
