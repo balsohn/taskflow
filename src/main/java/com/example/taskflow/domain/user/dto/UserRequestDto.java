@@ -9,7 +9,7 @@ public class UserRequestDto {
     private final String username;
 
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$",
+            regexp = "^(?=[A-Za-z])(?=.*\\d)(?=.*[\\W_]).{8,}$",
             message = "비밀번호는 대소문자, 숫자, 특수문자를 포함한 8자 이상이어야 합니다."
     )
     private final String password;
