@@ -11,7 +11,7 @@ public class ActivityLogMapper {
     public static ActivityLogResponse toResponse(ActivityLog activityLog) {
         return new ActivityLogResponse(
                 activityLog.getId(),
-                activityLog.getUser().getId(),
+                activityLog.getUser().getUserId(),
                 activityLog.getActionType().name(),
                 activityLog.getEntityType().name(),
                 activityLog.getEntityId(),
@@ -32,7 +32,7 @@ public class ActivityLogMapper {
 
     private static UserInfoDto createUserInfo(User user) {
         return new UserInfoDto(
-                user.getId(),
+                user.getUserId(),
                 user.getName(),
                 user.getEmail()
         );
