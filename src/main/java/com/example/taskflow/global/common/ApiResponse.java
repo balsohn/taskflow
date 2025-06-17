@@ -39,6 +39,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(true, message, null);
     }
 
+
     // 실패 응답
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, message, null);
