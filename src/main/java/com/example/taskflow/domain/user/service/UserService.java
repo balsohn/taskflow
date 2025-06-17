@@ -39,7 +39,7 @@ public class UserService {
 
         User saveUser = userRepository.save(user);
 
-        return ApiResponse.success("회원가입이 완료되었습니다.",new UserResponseDto(saveUser.getId(),
+        return ApiResponse.success("회원가입이 완료되었습니다.",new UserResponseDto(saveUser.getUserId(),
                 saveUser.getUsername(),
                 saveUser.getEmail(),
                 saveUser.getRole(),
@@ -68,7 +68,7 @@ public class UserService {
 
         User saveUser = userRepository.findByUsernameOrElseThrow(username);
 
-        return ApiResponse.success("사용자 정보 조회 성공",new UserResponseDto(saveUser.getId(),
+        return ApiResponse.success("사용자 정보 조회 성공",new UserResponseDto(saveUser.getUserId(),
                 saveUser.getUsername(),
                 saveUser.getEmail(),
                 saveUser.getRole(),
