@@ -51,7 +51,7 @@ public class TaskService {
     }
 
     public TaskDetailResponseDto getTask(Long taskId) {
-        Task foundTask = taskRepository.findByIdWithComments(taskId)
+        Task foundTask = taskRepository.findByIdAndIsDeletedFalse(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("존재하지 않는 태스크입니다."));
 
         return TaskDetailResponseDto.fromEntity(foundTask);

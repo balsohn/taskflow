@@ -16,7 +16,12 @@ public class CommentInfo {
     private final UserInfo user;
 
     public static CommentInfo fromComment(Comment comment) {
-        return CommentInfo.builder().id(comment.getId()).comment(comment.getComment()).createdAtAt(comment.getCreatedAt())
-                .modifiedAt(comment.getModifiedAt()).user(UserInfo.fromUser(comment.getUser())).build();
+        return CommentInfo.builder()
+                .id(comment.getId())
+                .comment(comment.getComment())
+                .createdAtAt(comment.getCreatedAt())
+                .modifiedAt(comment.getModifiedAt())
+                .user(UserInfo.fromUser(comment.getUser()))
+                .build();
     }
 }

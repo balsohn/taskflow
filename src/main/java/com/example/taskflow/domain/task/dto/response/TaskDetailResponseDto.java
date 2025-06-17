@@ -43,8 +43,8 @@ public class TaskDetailResponseDto {
                 .creator(UserInfo.fromUser(task.getCreator()))
                 .assignee(UserInfo.fromUser(task.getAssignee()))
                 .comments(task.getComments().stream()
-                        .filter(comment -> !comment.isDeleted())
-                        .map(CommentInfo::fromComment)
+                        // TODO: comment 연동하고 동작하는지 확인
+                        .map(comment -> CommentInfo.fromComment(comment))
                         .collect(Collectors.toList()))
                 .build();
     }
