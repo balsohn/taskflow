@@ -18,23 +18,22 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String detail;
+    private String content;
 
     private int tasksId;
 
     @ManyToOne
-    @JoinColumn(name = "task_id")
+    @JoinColumn(name = "taskId")
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
-    public Comment(int tasksId,User user,String detail){
-        //this.task = task;
+    public Comment(int tasksId,User user,String content){
         this.user = user;
         this.tasksId = tasksId;
-        this.detail = detail;
+        this.content = content;
     }
 
 }
