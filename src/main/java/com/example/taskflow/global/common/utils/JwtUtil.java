@@ -1,6 +1,7 @@
 package com.example.taskflow.global.common.utils;
 
 import com.example.taskflow.domain.user.enums.UserRoleEnum;
+import com.example.taskflow.global.common.dto.TokenResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -11,14 +12,19 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j(topic = "JwtUtil")
 @Component
 public class JwtUtil {
     // JWT 토큰의 접두사
     public static final String BEARER_PREFIX = "Bearer ";
+
     // JWT 토큰의 만료 시간 (밀리초 단위, 여기서는 60분)
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
+
     // JWT 서명 알고리즘
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     // 애플리케이션 설정 파일에서 주입받은 비밀 키
@@ -39,6 +45,7 @@ public class JwtUtil {
 
     /**
      * JWT 토큰에서 사용자 이름을 추출합니다.
+     *
      * @param token JWT 토큰
      * @return 사용자 이름
      */
@@ -51,6 +58,7 @@ public class JwtUtil {
 
     /**
      * JWT 토큰에서 모든 클레임을 추출합니다.
+     *
      * @param token JWT 토큰
      * @return 클레임 객체
      */
@@ -62,28 +70,51 @@ public class JwtUtil {
     }
 
     /**
-     * JWT 토큰을 생성합니다.
+     * JWT Access 토큰을 생성합니다.
+     *
      * @param username 사용자 이름
      * @param userRole 사용자의 역할 (권한)
      * @return 생성된 JWT 토큰
      */
-    public String generateToken(String username, UserRoleEnum userRole) {
+    public String generateAccessToken(String username, UserRoleEnum userRole) {
         Date date = new Date();
 
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setSubject(username) // 사용자 식별자 (ID)
-                        .claim("auth", userRole) // 사용자 권한 (역할)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간 설정
-                        .setIssuedAt(date) // 발급 시간 설정
-                        .signWith(key, signatureAlgorithm) // 비밀 키와 알고리즘으로 서명
-                        .compact(); // JWT 토큰 생성
+        return Jwts.builder()
+                .setSubject(username) // 사용자 식별자 (ID)
+                .claim("auth", userRole) // 사용자 권한 (역할)
+                .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간 설정
+                .setIssuedAt(date) // 발급 시간 설정
+                .signWith(key, signatureAlgorithm) // 비밀 키와 알고리즘으로 서명
+                .compact(); // JWT 토큰 생성
     }
 
+    // Jwt Refresh 토큰 생성
+    public String generateRefreshToken(String username) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_TIME))
+                .signWith(key, signatureAlgorithm)
+                .compact();
+    }
+
+    // Jwt Access + Refresh 토큰 동시 생성
+    public TokenResponseDto generateTokens(String username, UserRoleEnum userRole) {
+        String accessToken = generateAccessToken(username, userRole);
+        String refreshToken = generateRefreshToken(username);
+
+        return new TokenResponseDto(
+                BEARER_PREFIX + accessToken,
+                BEARER_PREFIX + refreshToken
+        );
+    }
     // 이 문자열은 JWT야 약속이 되어 있음.
 
     /**
      * JWT 토큰에서 역할(권한) 정보를 추출합니다.
+     *
      * @param token JWT 토큰
      * @return 역할 정보 (문자열)
      */
@@ -93,8 +124,9 @@ public class JwtUtil {
 
     /**
      * JWT 토큰에서 특정 역할이 포함되어 있는지 확인합니다.
+     *
      * @param token JWT 토큰
-     * @param role 확인할 역할
+     * @param role  확인할 역할
      * @return 역할 포함 여부 (true: 포함됨, false: 포함되지 않음)
      */
     public boolean hasRole(String token, String role) {
