@@ -60,7 +60,7 @@ public class TaskServiceTest {
         when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
 
         // then
-        TaskResponseDto result = taskService.saveTask(requestDto);
+        TaskResponseDto result = taskService.saveTask(creator.getUsername(), requestDto);
 
         assertNotNull(result);
         assertEquals("프론트엔드 오류 수정", result.getTitle());

@@ -9,6 +9,7 @@ import com.example.taskflow.domain.task.enums.TaskStatus;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.enums.UserRoleEnum;
+import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.dto.PageResponse;
 import com.example.taskflow.global.exception.custom.InvalidStatusException;
 import com.example.taskflow.global.exception.custom.TaskNotFoundException;
@@ -25,13 +26,11 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public TaskResponseDto saveTask(TaskRequestDto requestDto) {
-        User assignee = new User("kkk", "abc", "www", "김", UserRoleEnum.USER);
-        assignee.setId(2L);
-
-        User creator = new User("jsdom", "124344", "wwwd", "이", UserRoleEnum.USER);
-        assignee.setId(1L);
+    public TaskResponseDto saveTask(String username, TaskRequestDto requestDto) {
+        User creator = userRepository.findByUsernameOrElseThrow(username);
+        User assignee = userRepository.findByIdOrElseThrow(requestDto.getAssigneeId());
 
         // Todo: 로그인 후 수정
         Task task = TaskRequestDto.toEntity(requestDto, creator, assignee);
@@ -48,7 +47,7 @@ public class TaskService {
      * @return 페이징된 태스크 목록
      */
     public PageResponse<TaskResponseDto> getTasks(TaskStatus status, String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(page, size);
 
 //        Page<TaskResponseDto> responseDtos = taskRepository.getTasks(status, keyword, pageable)
 //                .map(TaskResponseDto::fromEntity);
@@ -75,12 +74,13 @@ public class TaskService {
     조회할 때 연관객체 fetch 하지 않고 지연로딩
      */
     @Transactional
-    public TaskResponseDto updateTask(Long taskId, TaskRequestDto requestDto) {
-        // TODO: 유저 조회 메서드 사용
-        User assignee = new User("kkk", "abc", "www", "김", UserRoleEnum.USER);
-        assignee.setId(2L);
-
+    public TaskResponseDto updateTask(String username, Long taskId, TaskRequestDto requestDto) {
+        User loginUser = userRepository.findByUsernameOrElseThrow(username);
         Task foundTask = findByIdOrElseThrow(taskId);
+        User assignee = userRepository.findByIdOrElseThrow(requestDto.getAssigneeId());
+
+        // Task 생성자와 담당자외에는 권한 없음
+        validateAuthorized(loginUser, foundTask);
 
         // dueDate는 수정으로 null 값이 들어갈경우 기한없음으로 처리
         foundTask.update(requestDto.getTitle(), requestDto.getDescription(), requestDto.getDueDate(), requestDto.getPriority(), assignee);
@@ -88,14 +88,17 @@ public class TaskService {
         return TaskResponseDto.fromEntity(foundTask);
     }
 
+    /*
+    Task 상태 변경 메서드
+    ADMIN과 담당자만이 변경 가능
+    Task 상태는 다음 단계로만 변경 가능
+     */
     @Transactional
-    public StatusResponseDto updateStatus(Long taskId, TaskStatus newStatus) {
+    public StatusResponseDto updateStatus(String username, Long taskId, TaskStatus newStatus) {
+        User loginUser = userRepository.findByUsernameOrElseThrow(username);
         Task foundTask = findByIdOrElseThrow(taskId);
 
-        User loginUser = new User("kkk", "abc", "www", "김", UserRoleEnum.USER);
-        loginUser.setId(2L);
-
-        if (loginUser.getRole().equals(UserRoleEnum.USER) && !loginUser.getId().equals(foundTask.getId())) {
+        if (loginUser.getRole().equals(UserRoleEnum.USER) && !loginUser.getId().equals(foundTask.getAssignee().getId())) {
             throw new UnauthorizedActionException("해당 작업에 대한 권한이 없습니다.");
         }
 
@@ -106,14 +109,27 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(Long taskId) {
+    public void deleteTask(String username, Long taskId) {
+        User loginUser = userRepository.findByUsernameOrElseThrow(username);
         Task foundTask = findByIdOrElseThrow(taskId);
+
+        validateAuthorized(loginUser, foundTask);
         foundTask.delete();
     }
 
+    /*
+    private 메서드
+     */
     private Task findByIdOrElseThrow(Long taskId) {
         return taskRepository.findByIdAndIsDeletedFalse(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("해당 Task를 찾을 수 없습니다."));
+    }
+
+    private void validateAuthorized(User loginUser, Task foundTask) {
+        if (!(loginUser.getId().equals(foundTask.getCreator().getId()) ||
+                loginUser.getId().equals(foundTask.getAssignee().getId()))) {
+            throw new UnauthorizedActionException("해당 작업에 대한 권한이 없습니다.");
+        }
     }
 
     private void validateStatusChange(Task task, TaskStatus newStatus) {
@@ -134,6 +150,4 @@ public class TaskService {
                 throw new InvalidStatusException("이미 완료된 상태입니다.");
         }
     }
-
-
 }

@@ -1,7 +1,9 @@
 package com.example.taskflow.domain.task.dto.response;
 
 import com.example.taskflow.domain.user.entity.User;
+import lombok.Getter;
 
+@Getter
 public class UserInfo {
 
     private final Long id;
