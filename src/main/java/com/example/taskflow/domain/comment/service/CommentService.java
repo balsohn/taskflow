@@ -26,7 +26,7 @@ public class CommentService extends BaseTimeEntity {
     @Transactional
     public CommentResponseDto singup(Long id,String detail) {
 
-        User user = userRepository.findByUserId(id);
+        User user = userRepository.findById(id).get();
         int taskId = 1;
 
         Comment comment = new Comment(taskId,user,detail);

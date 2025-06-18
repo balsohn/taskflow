@@ -85,7 +85,7 @@ public class ActivityLogService {
             throw new UserNotFoundException(userId);
         }
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ActivityLog> logs = activityLogRepository.findByUserUserIdAndIsDeletedFalse(userId, pageable);
+        Page<ActivityLog> logs = activityLogRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
 
         return PageResponse.of(logs, ActivityLogMapper::toResponse);
     }
