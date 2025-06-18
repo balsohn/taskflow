@@ -13,7 +13,7 @@ public class CommentResponseDto {
     private final Long userId;
     private final int taskId;
     @NotBlank
-    private final String comment;
+    private final String content;
     @NotBlank
     //private final String userName;
     private final Boolean isDeleted;
@@ -24,10 +24,10 @@ public class CommentResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime modifiedAt;
 
-    public CommentResponseDto(Long userId ,int taskId,String comment,Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public CommentResponseDto(Long userId ,int taskId,String content,Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.userId = userId;
         this.taskId = taskId;
-        this.comment = comment;
+        this.content = content;
         //this.userName = userName;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
