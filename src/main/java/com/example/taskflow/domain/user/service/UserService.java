@@ -55,6 +55,9 @@ public class UserService {
 
         User user = userRepository.findByUsernameOrElseThrow(loginRequestDto.getUsername());
 
+        if(user.getIsDeleted()){
+            return ApiResponse.error("등록되지 않은 유저입니다.");
+        }
 
         if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
             return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
@@ -69,6 +72,10 @@ public class UserService {
     public ApiResponse myProfile(String username) {
 
         User saveUser = userRepository.findByUsernameOrElseThrow(username);
+
+        if(saveUser.getIsDeleted()){
+            return ApiResponse.error("등록되지 않은 유저입니다.");
+        }
 
         return ApiResponse.success("사용자 정보 조회 성공",new UserResponseDto(saveUser.getId(),
                 saveUser.getUsername(),

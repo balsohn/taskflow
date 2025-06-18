@@ -1,5 +1,5 @@
 package com.example.taskflow.domain.task.enums;
 
-public enum Status {
-    TODO, IN_PROGRESS, DONE
+public enum TaskPriority {
+    HIGH, MEDIUM, LOW;
 }
