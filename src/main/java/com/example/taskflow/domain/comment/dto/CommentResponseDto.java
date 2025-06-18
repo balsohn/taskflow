@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
 
     private final Long userId;
-    private final int taskId;
+    private final Long taskId;
     @NotBlank
     private final String content;
     @NotBlank
-    //private final String userName;
     private final Boolean isDeleted;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -24,11 +23,11 @@ public class CommentResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime modifiedAt;
 
-    public CommentResponseDto(Long userId ,int taskId,String content,Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public CommentResponseDto(Long userId ,Long taskId,String content,Boolean isDeleted,
+                              LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.userId = userId;
         this.taskId = taskId;
         this.content = content;
-        //this.userName = userName;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
