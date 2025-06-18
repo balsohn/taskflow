@@ -1,7 +1,7 @@
 package com.example.taskflow.domain.task.repository;
 
 import com.example.taskflow.domain.task.entity.Task;
-import com.example.taskflow.domain.task.enums.Status;
+import com.example.taskflow.domain.task.enums.TaskStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -21,7 +21,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                 WHERE (:status IS NULL OR t.status = :status)
                 AND (:keyword IS NULL OR t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
             """)
-    Page<Task> getTasks(@Param("status") Status status,
+    Page<Task> getTasks(@Param("status") TaskStatus status,
                         @Param("keyword") String keyword,
                         Pageable pageable);
 

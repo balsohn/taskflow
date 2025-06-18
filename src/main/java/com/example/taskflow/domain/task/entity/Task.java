@@ -1,7 +1,7 @@
 package com.example.taskflow.domain.task.entity;
 
-import com.example.taskflow.domain.task.enums.Priority;
-import com.example.taskflow.domain.task.enums.Status;
+import com.example.taskflow.domain.task.enums.TaskPriority;
+import com.example.taskflow.domain.task.enums.TaskStatus;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.nio.MappedByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,13 +28,13 @@ public class Task extends BaseTimeEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Priority priority;
+    private TaskPriority priority;
 
     @Column(name = "due_date")
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.TODO;
+    private TaskStatus status = TaskStatus.TODO;
 
     private LocalDateTime startedAt;
 
@@ -51,7 +50,7 @@ public class Task extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Task(String title, String description, Priority priority, LocalDate dueDate, User creator, User assignee) {
+    public Task(String title, String description, TaskPriority priority, LocalDate dueDate, User creator, User assignee) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -64,7 +63,7 @@ public class Task extends BaseTimeEntity {
         this.startedAt = LocalDateTime.now();
     }
 
-    public void updateStatus(Status status) {
+    public void updateStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -73,7 +72,7 @@ public class Task extends BaseTimeEntity {
         this.id = l;
     }
 
-    public void update(String title, String description, LocalDate dueDate, Priority priority, User assignee) {
+    public void update(String title, String description, LocalDate dueDate, TaskPriority priority, User assignee) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;

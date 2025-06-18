@@ -1,5 +1,5 @@
 package com.example.taskflow.domain.task.enums;
 
-public enum Priority {
+public enum TaskPriority {
     HIGH, MEDIUM, LOW;
 }

@@ -3,7 +3,7 @@ package com.example.taskflow.domain.task;
 import com.example.taskflow.domain.task.dto.request.TaskRequestDto;
 import com.example.taskflow.domain.task.dto.response.TaskResponseDto;
 import com.example.taskflow.domain.task.entity.Task;
-import com.example.taskflow.domain.task.enums.Priority;
+import com.example.taskflow.domain.task.enums.TaskPriority;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.task.service.TaskService;
 import com.example.taskflow.domain.user.entity.User;
@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +33,7 @@ public class TaskServiceTest {
         // given
         TaskRequestDto requestDto = new TaskRequestDto("프론트엔드 오류 수정",
                 "페이지 이동 시 로딩 문제 해결",
-                Priority.HIGH,
+                TaskPriority.HIGH,
                  3L,
                 LocalDate.parse("2025-06-30"));
 

@@ -1,9 +1,11 @@
 package com.example.taskflow.domain.task.controller;
 
+import com.example.taskflow.domain.task.dto.request.StatusRequestDto;
 import com.example.taskflow.domain.task.dto.request.TaskRequestDto;
+import com.example.taskflow.domain.task.dto.response.StatusResponseDto;
 import com.example.taskflow.domain.task.dto.response.TaskDetailResponseDto;
 import com.example.taskflow.domain.task.dto.response.TaskResponseDto;
-import com.example.taskflow.domain.task.enums.Status;
+import com.example.taskflow.domain.task.enums.TaskStatus;
 import com.example.taskflow.domain.task.service.TaskService;
 import com.example.taskflow.global.common.ApiResponse;
 import com.example.taskflow.global.common.dto.PageResponse;
@@ -27,7 +29,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<TaskResponseDto>>> getTasks(
-            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
@@ -46,4 +48,9 @@ public class TaskController {
         return ResponseEntity.ok(ApiResponse.success("태스크가 수정되었습니다.", taskService.updateTask(taskId, requestDto)));
     }
 
+    @PatchMapping("/{taskId}/status")
+    public ResponseEntity<ApiResponse<StatusResponseDto>> updateStatus(@PathVariable Long taskId,
+                                                                       @Validated @RequestBody StatusRequestDto requestDto) {
+        return ResponseEntity.ok(ApiResponse.success("태스크 상태가 변경되었습니다.", taskService.updateStatus(taskId, requestDto.getStatus())));
+    }
 }
