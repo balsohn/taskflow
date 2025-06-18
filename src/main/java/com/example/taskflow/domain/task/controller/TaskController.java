@@ -53,4 +53,11 @@ public class TaskController {
                                                                        @Validated @RequestBody StatusRequestDto requestDto) {
         return ResponseEntity.ok(ApiResponse.success("태스크 상태가 변경되었습니다.", taskService.updateStatus(taskId, requestDto.getStatus())));
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+
+        return ResponseEntity.ok(ApiResponse.success("태스크가 삭제되었습니다."));
+    }
 }

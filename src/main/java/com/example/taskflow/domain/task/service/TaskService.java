@@ -105,6 +105,12 @@ public class TaskService {
         return StatusResponseDto.fromEntity(foundTask);
     }
 
+    @Transactional
+    public void deleteTask(Long taskId) {
+        Task foundTask = findByIdOrElseThrow(taskId);
+        foundTask.delete();
+    }
+
     private Task findByIdOrElseThrow(Long taskId) {
         return taskRepository.findByIdAndIsDeletedFalse(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("해당 Task를 찾을 수 없습니다."));
@@ -128,5 +134,6 @@ public class TaskService {
                 throw new InvalidStatusException("이미 완료된 상태입니다.");
         }
     }
+
 
 }
