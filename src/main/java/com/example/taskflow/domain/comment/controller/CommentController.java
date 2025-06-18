@@ -31,7 +31,7 @@ public class CommentController {
     ){
         Long userId = User.getId();
 
-        CommentResponseDto commentResponseDto = commentService.singup(taskId,userId,commentRequestDto.getContent());
+        CommentResponseDto commentResponseDto = commentService.singup(taskId,commentRequestDto.getContent());
 
         return new ResponseEntity<>(ApiResponse.success("댓글이 생성되었습니다.",
                 commentResponseDto), HttpStatus.OK);
