@@ -6,6 +6,7 @@ import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.ApiResponse;
+import com.example.taskflow.global.common.dto.TokenResponseDto;
 import com.example.taskflow.global.common.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +64,10 @@ public class UserService {
             return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        TokenResponseDto token = jwtUtil.generateTokens(user.getUsername(), user.getRole());
+
+        log.info(token.getAccessToken());
+        log.info(token.getRefreshToken());
 
         return ApiResponse.success("로그인 성공",token);
     }
