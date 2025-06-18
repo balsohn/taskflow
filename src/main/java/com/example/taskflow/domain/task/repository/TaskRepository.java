@@ -26,7 +26,14 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                         Pageable pageable);
 
     // TODO: 의도한대로 동작하는지 확인
-    @EntityGraph(attributePaths = {"creator", "assignee", "comments"})
+    @Query("""
+            SELECT t FROM Task t 
+            LEFT JOIN FETCH t.creator 
+            LEFT JOIN FETCH t.assignee 
+            LEFT JOIN FETCH t.comments 
+            WHERE t.id = :taskId
+            AND t.isDeleted = false
+            """)
     Optional<Task> findByIdWithDetailAndIsDeletedFalse(Long taskId);
 
     Optional<Task> findByIdAndIsDeletedFalse(Long taskId);

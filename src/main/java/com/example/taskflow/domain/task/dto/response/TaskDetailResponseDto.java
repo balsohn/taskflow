@@ -44,7 +44,7 @@ public class TaskDetailResponseDto {
                 .assignee(UserInfo.fromUser(task.getAssignee()))
                 .comments(task.getComments().stream()
                         // TODO: comment 연동하고 동작하는지 확인
-                        .map(comment -> CommentInfo.fromComment(comment))
+                        .map(CommentInfo::fromComment)
                         .collect(Collectors.toList()))
                 .build();
     }

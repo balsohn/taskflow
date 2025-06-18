@@ -1,5 +1,6 @@
 package com.example.taskflow.domain.task.dto.response;
 
+import com.example.taskflow.domain.comment.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,8 +19,8 @@ public class CommentInfo {
     public static CommentInfo fromComment(Comment comment) {
         return CommentInfo.builder()
                 .id(comment.getId())
-                .comment(comment.getComment())
-                .createdAtAt(comment.getCreatedAt())
+                .comment(comment.getDetail())
+                .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .user(UserInfo.fromUser(comment.getUser()))
                 .build();
