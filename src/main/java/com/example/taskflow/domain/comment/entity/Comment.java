@@ -12,30 +12,29 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
-@SQLDelete(sql = "UPDATE comments SET isDeleted = true where id = ?")
 public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
 
-    private String comment;
+    private String detail;
 
     private int tasksId;
 
     @ManyToOne
-    @JoinColumn(name = "task_Id")
+    @JoinColumn(name = "task_id")
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "user_Id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(int tasksId,User user,String comment){
+    public Comment(int tasksId,User user,String detail){
         //this.task = task;
         this.user = user;
         this.tasksId = tasksId;
-        this.comment = comment;
+        this.detail = detail;
     }
 
 }

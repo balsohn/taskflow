@@ -20,8 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // username 중복 검증
     boolean existsByUsername(String username);
 
-    User findByUserId(Long userId);
-    User findByName(String name);
+    List<User> findByName(String name);
 
     // email 중복 검증
     boolean existsByemail(String email);

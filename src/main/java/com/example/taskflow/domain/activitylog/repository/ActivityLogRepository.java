@@ -13,5 +13,5 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
     Page<ActivityLog> findByIsDeletedFalse(Pageable pageable);
 
     // 사용자별 활동 로그 조회
-    Page<ActivityLog> findByUserUserIdAndIsDeletedFalse(Long userId, Pageable pageable);
+    Page<ActivityLog> findByUserIdAndIsDeletedFalse(Long userId, Pageable pageable);
 }
