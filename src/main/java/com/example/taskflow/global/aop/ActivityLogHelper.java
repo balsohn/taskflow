@@ -19,8 +19,8 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 /**
- * 활동 로그 관련 공통 기능을 제공하는 헬퍼 클래스 (단순 버전)
- * - 동기 처리로 단순화
+ * 활동 로그 관련 공통 기능을 제공하는 헬퍼 클래스
+ * - Before/After 지원 추가
  * - 안전한 사용자 정보 캐싱
  * - 향상된 예외 처리
  */
@@ -55,6 +55,46 @@ public class ActivityLogHelper {
         } catch (Exception e) {
             log.error("활동 로그 기록 중 오류 발생: {}", e.getMessage(), e);
         }
+    }
+
+    /**
+     * 간단한 활동 로그 기록 (before/after 없음)
+     */
+    public void logSimpleActivity(ActionType actionType, EntityType entityType,
+                                  Long entityId, String description) {
+        logActivity(actionType, entityType, entityId, description, null, null);
+    }
+
+    /**
+     * Before/After 활동 로그 기록
+     */
+    public void logBeforeAfterActivity(ActionType actionType, EntityType entityType,
+                                       Long entityId, String baseDescription,
+                                       String beforeValue, String afterValue) {
+        try {
+            // Before/After 형태의 설명 생성
+            String description = createBeforeAfterDescription(baseDescription, beforeValue, afterValue);
+            logActivity(actionType, entityType, entityId, description, beforeValue, afterValue);
+
+        } catch (Exception e) {
+            log.error("Before/After 활동 로그 기록 중 오류 발생: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Before/After 설명 생성
+     */
+    private String createBeforeAfterDescription(String baseDescription, String beforeValue, String afterValue) {
+        if (beforeValue == null || afterValue == null) {
+            return baseDescription;
+        }
+
+        // 값이 같으면 변경이 없는 것이므로 기본 설명 사용
+        if (beforeValue.equals(afterValue)) {
+            return baseDescription;
+        }
+
+        return String.format("%s (%s → %s)", baseDescription, beforeValue, afterValue);
     }
 
     /**
@@ -111,6 +151,62 @@ public class ActivityLogHelper {
         } catch (Exception e) {
             log.error("활동 로그 기록 중 오류 발생: {}", e.getMessage(), e);
         }
+    }
+
+    // ==================== 상태/우선순위/권한 변환 메서드 ====================
+
+    /**
+     * Task 상태 한글 변환
+     */
+    public String getTaskStatusDisplay(String status) {
+        if (status == null) return "알 수 없음";
+        return switch (status.toUpperCase()) {
+            case "TODO" -> "할 일";
+            case "IN_PROGRESS" -> "진행 중";
+            case "DONE" -> "완료";
+            default -> status;
+        };
+    }
+
+    /**
+     * Task 우선순위 한글 변환
+     */
+    public String getTaskPriorityDisplay(String priority) {
+        if (priority == null) return "알 수 없음";
+        return switch (priority.toUpperCase()) {
+            case "HIGH" -> "높음";
+            case "MEDIUM" -> "보통";
+            case "LOW" -> "낮음";
+            default -> priority;
+        };
+    }
+
+    /**
+     * User 권한 한글 변환
+     */
+    public String getUserRoleDisplay(String role) {
+        if (role == null) return "알 수 없음";
+        return switch (role.toUpperCase()) {
+            case "ADMIN" -> "관리자";
+            case "USER" -> "사용자";
+            default -> role;
+        };
+    }
+
+    /**
+     * 사용자 ID로 이름 조회
+     */
+    public String getUserNameById(Long userId) {
+        try {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                return user.getName() != null ? user.getName() : user.getUsername();
+            }
+        } catch (Exception e) {
+            log.debug("사용자 이름 조회 실패 - ID: {}", userId);
+        }
+        return "알 수 없는 사용자";
     }
 
     // ==================== 사용자 인증 관련 ====================
