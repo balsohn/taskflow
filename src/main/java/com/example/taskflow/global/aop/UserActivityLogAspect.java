@@ -3,6 +3,7 @@ package com.example.taskflow.global.aop;
 import com.example.taskflow.domain.activitylog.enums.ActionType;
 import com.example.taskflow.domain.activitylog.enums.EntityType;
 import com.example.taskflow.domain.user.entity.User;
+import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * User 도메인 전용 활동 로그 Aspect
- * - 회원가입, 로그인, 회원정보 수정, 회원탈퇴 로깅
+ * - 회원가입, 로그인, 회원탈퇴 로깅
  * - 안전한 ThreadLocal 관리
  * - 향상된 예외 처리
+ *
+ * - 비활성화 (주석)
+ *  회원정보 수정, - Before/After 지원 (권한 변경, 이메일 변경)
  */
 @Aspect
 @Component
@@ -125,71 +129,116 @@ public class UserActivityLogAspect {
 
     // ==================== 회원정보 수정 ====================
 
-    @Before("userUpdateMethods()")
-    public void beforeUserUpdate(JoinPoint joinPoint) {
-        try {
-            Object[] args = joinPoint.getArgs();
-            Long userId = extractUserIdFromArgs(args);
-
-            if (userId != null) {
-                Optional<User> userOpt = userRepository.findById(userId);
-                if (userOpt.isPresent()) {
-                    User oldUser = userOpt.get();
-
-                    Map<String, Object> context = userContext.get();
-                    context.put("userId", userId);
-                    context.put("oldUsername", oldUser.getUsername());
-                    context.put("oldEmail", oldUser.getEmail());
-                    context.put("oldName", oldUser.getName());
-
-                    log.debug("User 수정 전 값 저장 완료 - ID: {}", userId);
-                }
-            }
-        } catch (Exception e) {
-            log.debug("User 수정 전 값 저장 실패 (계속 진행): {}", e.getMessage());
-        }
-    }
-
-    @AfterReturning(value = "userUpdateMethods()", returning = "result")
-    public void logUserUpdate(JoinPoint joinPoint, Object result) {
-        try {
-            Map<String, Object> context = userContext.get();
-            Long userId = (Long) context.get("userId");
-
-            if (userId == null) {
-                // context에 없으면 result에서 추출 시도
-                userId = activityLogHelper.extractIdFromResult(result);
-            }
-
-            if (userId != null) {
-                String oldUsername = (String) context.get("oldUsername");
-                String oldEmail = (String) context.get("oldEmail");
-                String oldName = (String) context.get("oldName");
-
-                String newUsername = extractUsernameFromResult(result);
-                String newEmail = extractEmailFromResult(result);
-                String newName = extractNameFromResult(result);
-
-                String description = buildUpdateDescription(oldUsername, oldEmail, oldName,
-                        newUsername, newEmail, newName);
-
-                activityLogHelper.logActivity(
-                        ActionType.UPDATE,
-                        EntityType.USER,
-                        userId,
-                        description,
-                        buildOldValueString(oldUsername, oldEmail, oldName),
-                        buildNewValueString(newUsername, newEmail, newName)
-                );
-
-                log.debug("User 수정 로그 기록 완료 - ID: {}", userId);
-            }
-        } catch (Exception e) {
-            log.error("User 수정 로그 기록 중 오류 발생", e);
-        } finally {
-            safeCleanupContext();
-        }
-    }
+//    @Before("userUpdateMethods()")
+//    public void beforeUserUpdate(JoinPoint joinPoint) {
+//        try {
+//            Object[] args = joinPoint.getArgs();
+//            // TODO: UserService.update 메서드가 구현되면 정확한 인자 구조에 맞춰 수정 필요
+//            String username = extractUsernameFromArgs(args);
+//
+//            if (username != null) {
+//                Optional<User> userOpt = userRepository.findByUsername(username);
+//                if (userOpt.isPresent()) {
+//                    User oldUser = userOpt.get();
+//
+//                    Map<String, Object> context = userContext.get();
+//                    context.put("userId", oldUser.getId());
+//                    context.put("username", username);
+//                    context.put("oldEmail", oldUser.getEmail());
+//                    context.put("oldRole", oldUser.getRole());
+//                    context.put("oldName", oldUser.getName());
+//
+//                    log.debug("User 수정 전 값 저장 완료 - ID: {}, Username: {}", oldUser.getId(), username);
+//                }
+//            }
+//        } catch (Exception e) {
+//            log.debug("User 수정 전 값 저장 실패 (계속 진행): {}", e.getMessage());
+//        }
+//    }
+//
+//    @AfterReturning(value = "userUpdateMethods()", returning = "result")
+//    public void logUserUpdate(JoinPoint joinPoint, Object result) {
+//        try {
+//            Map<String, Object> context = userContext.get();
+//            Long userId = (Long) context.get("userId");
+//            String username = (String) context.get("username");
+//
+//            if (userId == null) {
+//                // context에 없으면 result에서 추출 시도
+//                userId = activityLogHelper.extractIdFromResult(result);
+//            }
+//
+//            if (userId != null) {
+//                // 변경된 사용자 정보 다시 조회
+//                Optional<User> newUserOpt = userRepository.findById(userId);
+//                if (newUserOpt.isPresent()) {
+//                    User newUser = newUserOpt.get();
+//
+//                    // 각 필드별 변경 내용 확인 및 로그 기록
+//                    logUserFieldChanges(userId, context, newUser);
+//                }
+//
+//                log.debug("User 수정 로그 기록 완료 - ID: {}", userId);
+//            }
+//        } catch (Exception e) {
+//            log.error("User 수정 로그 기록 중 오류 발생", e);
+//        } finally {
+//            safeCleanupContext();
+//        }
+//    }
+//
+//    /**
+//     * User 필드별 변경 내용 로그 기록
+//     */
+//    private void logUserFieldChanges(Long userId, Map<String, Object> context, User newUser) {
+//        try {
+//            // 1. 이메일 변경 확인
+//            String oldEmail = (String) context.get("oldEmail");
+//            String newEmail = newUser.getEmail();
+//            if (oldEmail != null && newEmail != null && !oldEmail.equals(newEmail)) {
+//                activityLogHelper.logBeforeAfterActivity(
+//                        ActionType.UPDATE,
+//                        EntityType.USER,
+//                        userId,
+//                        "이메일을 변경하였습니다",
+//                        oldEmail,
+//                        newEmail
+//                );
+//            }
+//
+//            // 2. 권한 변경 확인 (관리자가 다른 사용자 권한 변경하는 경우)
+//            UserRoleEnum oldRole = (UserRoleEnum) context.get("oldRole");
+//            UserRoleEnum newRole = newUser.getRole();
+//            if (oldRole != null && newRole != null && !oldRole.equals(newRole)) {
+//                String oldRoleDisplay = activityLogHelper.getUserRoleDisplay(oldRole.name());
+//                String newRoleDisplay = activityLogHelper.getUserRoleDisplay(newRole.name());
+//
+//                activityLogHelper.logBeforeAfterActivity(
+//                        ActionType.UPDATE,
+//                        EntityType.USER,
+//                        userId,
+//                        "사용자 권한을 변경하였습니다",
+//                        oldRoleDisplay,
+//                        newRoleDisplay
+//                );
+//            }
+//
+//            // 3. 이름 변경 확인 (단순 로그)
+//            String oldName = (String) context.get("oldName");
+//            String newName = newUser.getName();
+//            if (oldName != null && newName != null && !oldName.equals(newName)) {
+//                activityLogHelper.logSimpleActivity(
+//                        ActionType.UPDATE,
+//                        EntityType.USER,
+//                        userId,
+//                        "사용자 정보를 수정하였습니다."
+//                );
+//            }
+//
+//        } catch (Exception e) {
+//            log.error("User 필드 변경 로그 기록 중 오류 발생", e);
+//        }
+//    }
 
     // ==================== 회원탈퇴 ====================
 
@@ -209,6 +258,7 @@ public class UserActivityLogAspect {
                         context.put("userId", oldUser.getId());
                         context.put("deletedUsername", oldUser.getUsername());
                         context.put("deletedEmail", oldUser.getEmail());
+                        context.put("deletedName", oldUser.getName());
 
                         log.debug("User 삭제 전 정보 저장 완료 - ID: {}, Username: {}", oldUser.getId(), username);
                     } else {
@@ -228,17 +278,17 @@ public class UserActivityLogAspect {
             Long userId = (Long) context.get("userId");
             String deletedUsername = (String) context.get("deletedUsername");
             String deletedEmail = (String) context.get("deletedEmail");
+            String deletedName = (String) context.get("deletedName");
 
             if (userId != null && deletedUsername != null) {
-                String description = String.format("사용자 '%s'가 회원탈퇴했습니다.", deletedUsername);
+                String displayName = deletedName != null ? deletedName : deletedUsername;
+                String description = String.format("사용자 '%s'가 회원탈퇴했습니다.", displayName);
 
-                activityLogHelper.logActivity(
+                activityLogHelper.logSimpleActivity(
                         ActionType.DELETE,
                         EntityType.USER,
                         userId,
-                        description,
-                        String.format("%s (%s)", deletedUsername, deletedEmail),
-                        null
+                        description
                 );
 
                 log.debug("User 삭제 로그 기록 완료 - ID: {}", userId);
@@ -287,6 +337,15 @@ public class UserActivityLogAspect {
         try {
             if (result == null) return null;
 
+            var dataField = activityLogHelper.findFieldRecursively(result.getClass(), "data");
+            if (dataField != null) {
+                dataField.setAccessible(true);
+                Object dataValue = dataField.get(result);
+                if (dataValue != null) {
+                    result = dataValue;
+                }
+            }
+
             var emailField = activityLogHelper.findFieldRecursively(result.getClass(), "email");
             if (emailField != null) {
                 emailField.setAccessible(true);
@@ -295,25 +354,6 @@ public class UserActivityLogAspect {
             }
         } catch (Exception e) {
             log.debug("결과에서 이메일 추출 실패: {}", e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * 결과 객체에서 이름 추출
-     */
-    private String extractNameFromResult(Object result) {
-        try {
-            if (result == null) return null;
-
-            var nameField = activityLogHelper.findFieldRecursively(result.getClass(), "name");
-            if (nameField != null) {
-                nameField.setAccessible(true);
-                Object value = nameField.get(result);
-                return value != null ? value.toString() : null;
-            }
-        } catch (Exception e) {
-            log.debug("결과에서 이름 추출 실패: {}", e.getMessage());
         }
         return null;
     }
@@ -340,75 +380,21 @@ public class UserActivityLogAspect {
         return null;
     }
 
-    /**
-     * 인자에서 User ID 추출
-     */
-    private Long extractUserIdFromArgs(Object[] args) {
-        if (args == null || args.length == 0) return null;
-
-        try {
-            if (args[0] instanceof Long longValue) {
-                return longValue;
-            }
-            if (args[0] instanceof Number numberValue) {
-                return numberValue.longValue();
-            }
-            // DTO에서 ID 추출 시도
-            if (args[0] != null) {
-                Long id = activityLogHelper.extractIdFromResult(args[0]);
-                if (id != null) return id;
-            }
-        } catch (Exception e) {
-            log.debug("인자에서 User ID 추출 실패: {}", e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * 사용자 수정 내용 설명 생성
-     */
-    private String buildUpdateDescription(String oldUsername, String oldEmail, String oldName,
-                                          String newUsername, String newEmail, String newName) {
-        StringBuilder changes = new StringBuilder();
-
-        if (oldUsername != null && newUsername != null && !oldUsername.equals(newUsername)) {
-            changes.append(String.format("사용자명: '%s' → '%s'", oldUsername, newUsername));
-        }
-
-        if (oldEmail != null && newEmail != null && !oldEmail.equals(newEmail)) {
-            if (changes.length() > 0) changes.append(", ");
-            changes.append(String.format("이메일: '%s' → '%s'", oldEmail, newEmail));
-        }
-
-        if (oldName != null && newName != null && !oldName.equals(newName)) {
-            if (changes.length() > 0) changes.append(", ");
-            changes.append(String.format("이름: '%s' → '%s'", oldName, newName));
-        }
-
-        return changes.length() > 0 ?
-                "사용자 정보를 수정했습니다. " + changes.toString() :
-                "사용자 정보를 수정했습니다.";
-    }
-
-    /**
-     * 이전 값 문자열 생성
-     */
-    private String buildOldValueString(String username, String email, String name) {
-        return String.format("사용자명: %s, 이메일: %s, 이름: %s",
-                username != null ? username : "N/A",
-                email != null ? email : "N/A",
-                name != null ? name : "N/A");
-    }
-
-    /**
-     * 새 값 문자열 생성
-     */
-    private String buildNewValueString(String username, String email, String name) {
-        return String.format("사용자명: %s, 이메일: %s, 이름: %s",
-                username != null ? username : "N/A",
-                email != null ? email : "N/A",
-                name != null ? name : "N/A");
-    }
+//    /**
+//     * 인자에서 사용자명 추출 (수정 메서드용)
+//     */
+//    private String extractUsernameFromArgs(Object[] args) {
+//        try {
+//            // TODO: UserService.update 메서드 시그니처 확인 후 정확한 인덱스 조정 필요
+//            // 현재는 첫 번째 인자가 username이라고 가정
+//            if (args != null && args.length > 0 && args[0] instanceof String) {
+//                return (String) args[0];
+//            }
+//        } catch (Exception e) {
+//            log.debug("인자에서 사용자명 추출 실패: {}", e.getMessage());
+//        }
+//        return null;
+//    }
 
     /**
      * 안전한 ThreadLocal 정리 (메모리 누수 방지)
@@ -437,9 +423,9 @@ public class UserActivityLogAspect {
     public void cleanup() {
         try {
             userContext.remove();
-            log.debug("UserActivityLogAspect ThreadLocal 정리 완료");
+            log.debug("UserActivityAspect ThreadLocal 정리 완료");
         } catch (Exception e) {
-            log.warn("UserActivityLogAspect 정리 중 오류 발생: {}", e.getMessage());
+            log.warn("UserActivityAspect 정리 중 오류 발생: {}", e.getMessage());
         }
     }
 }
