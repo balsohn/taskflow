@@ -4,16 +4,20 @@ import com.example.taskflow.domain.user.dto.LoginRequestDto;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
 import com.example.taskflow.domain.user.service.UserService;
 import com.example.taskflow.global.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Controller
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -21,7 +25,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping
-    public ResponseEntity<ApiResponse> createUser(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRequestDto userRequestDto){
 
         ApiResponse signupDto = userService.createUser(userRequestDto);
 
@@ -36,4 +40,18 @@ public class UserController {
 
         return new ResponseEntity<>(login,HttpStatus.OK);
     }
+
+    // 유저 조회
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse> myProfile(@AuthenticationPrincipal User user){
+
+        String username = user.getUsername();
+
+        ApiResponse myProfile = userService.myProfile(username);
+
+        return new ResponseEntity<>(myProfile,HttpStatus.OK);
+    }
+
+    // 유저 삭제
+
 }
