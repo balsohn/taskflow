@@ -14,19 +14,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivityLogResponse {
-    private Long id;
-    private Long userId;
-    private String actionType;
-    private String entityType;
-    private Long entityId;
-    private String description;
-    private String oldValue;
-    private String newValue;
-    private SecurityDataDto securityData;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private Long id;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
-    private UserInfoDto user;
+    private String name;
+
+    private String actionType;
+
+    private String entityType;
+
+    private Long entityId;
+
+    private String description;
 
 }
