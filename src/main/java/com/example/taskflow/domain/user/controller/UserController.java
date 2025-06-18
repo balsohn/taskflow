@@ -1,5 +1,6 @@
 package com.example.taskflow.domain.user.controller;
 
+import com.example.taskflow.domain.user.dto.DeleteUserRequestDto;
 import com.example.taskflow.domain.user.dto.LoginRequestDto;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
 import com.example.taskflow.domain.user.service.UserService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping
-    public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
         ApiResponse signupDto = userService.createUser(userRequestDto);
 
@@ -38,20 +40,26 @@ public class UserController {
 
         ApiResponse login = userService.login(loginRequestDto);
 
-        return new ResponseEntity<>(login,HttpStatus.OK);
+        return new ResponseEntity<>(login, HttpStatus.OK);
     }
 
     // 유저 조회
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse> myProfile(@AuthenticationPrincipal User user){
+    public ResponseEntity<ApiResponse> myProfile(@AuthenticationPrincipal User user) {
 
-        String username = user.getUsername();
+        ApiResponse myProfile = userService.myProfile(user.getUsername());
 
-        ApiResponse myProfile = userService.myProfile(username);
-
-        return new ResponseEntity<>(myProfile,HttpStatus.OK);
+        return new ResponseEntity<>(myProfile, HttpStatus.OK);
     }
 
     // 유저 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
+                                                  @RequestBody
+                                                  DeleteUserRequestDto deleteUserRequestDto) {
 
+        ApiResponse apiResponse = userService.deleteUser(userDetails.getUsername(),deleteUserRequestDto.getPassword());
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
 }
