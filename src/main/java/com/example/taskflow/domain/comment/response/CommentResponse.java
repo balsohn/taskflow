@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CommentResponse extends JpaRepository<Comment, Long> {
 
-    Comment findbyUser (User user);
+    Comment findbyUser (List<User> user);
 
 }

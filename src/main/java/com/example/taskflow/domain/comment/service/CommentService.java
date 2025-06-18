@@ -40,8 +40,8 @@ public class CommentService extends BaseTimeEntity {
 
 //    public List<findUserNameResponseDto>findUserNameList(String userName,
 //                                                         String detail){
-//        User user = userRepository.findByName(userName);
-//        List<Comment> userNameList = commentResponse.findbyUser(userName);
+//        List<User> user = userRepository.findByName(userName);
+//        List<Comment> userNameList = commentResponse.findbyUser(user);
 //        List<findUserNameResponseDto> userNameResponseDtoList = userNameList
 //                .stream()
 //                .map(findUserNameResponseDto::findUserNameDto)
