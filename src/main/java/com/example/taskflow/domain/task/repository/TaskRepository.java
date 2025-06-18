@@ -15,26 +15,26 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @EntityGraph(attributePaths = {"creator", "assignee"})
+    @EntityGraph(attributePaths = {"assignee"})
     @Query("""
                 SELECT t FROM Task t
                 WHERE (:status IS NULL OR t.status = :status)
                 AND (:keyword IS NULL OR t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
+                AND (:assigneeId IS NULL OR t.assignee.id = :assigneeId)
+                AND t.isDeleted = false
             """)
     Page<Task> getTasks(@Param("status") TaskStatus status,
                         @Param("keyword") String keyword,
+                        @Param("assigneeId") Long assigneeId,
                         Pageable pageable);
 
-    // TODO: 의도한대로 동작하는지 확인
     @Query("""
             SELECT t FROM Task t 
-            LEFT JOIN FETCH t.creator 
             LEFT JOIN FETCH t.assignee 
-            LEFT JOIN FETCH t.comments 
             WHERE t.id = :taskId
             AND t.isDeleted = false
             """)
-    Optional<Task> findByIdWithDetailAndIsDeletedFalse(Long taskId);
+    Optional<Task> findByIdWithAssigneeAndIsDeletedFalse(Long taskId);
 
     Optional<Task> findByIdAndIsDeletedFalse(Long taskId);
 }

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class TaskRequestDto {
@@ -26,9 +26,9 @@ public class TaskRequestDto {
     @NotNull(message = "담당자가 지정되지 않았습니다.")
     private final Long assigneeId;
 
-    private final LocalDate dueDate;
+    private final LocalDateTime dueDate;
 
-    public TaskRequestDto(String title, String description, TaskPriority priority, Long assigneeId, LocalDate dueDate) {
+    public TaskRequestDto(String title, String description, TaskPriority priority, Long assigneeId, LocalDateTime dueDate) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -41,7 +41,7 @@ public class TaskRequestDto {
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .priority(dto.getPriority())
-                .dueDate(dto.getDueDate() == null ? LocalDate.now().plusWeeks(1) : dto.getDueDate())
+                .dueDate(dto.getDueDate() == null ? LocalDateTime.now().plusWeeks(1) : dto.getDueDate())
                 .creator(creator)
                 .assignee(assignee)
                 .build();
