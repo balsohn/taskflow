@@ -30,9 +30,9 @@ public class CommentController {
 //    @GetMapping()
 //    public ResponseEntity<ApiResponse<List<findUserNameResponseDto>>> findUserName
 //            (@Valid @RequestBody
-//             findUserNameRequestDto findUserNameRequestDto) {
+//             findUserNameRequestDto findUserNameRequestDto,CommentResponseDto commentResponseDto) {
 //        List<findUserNameResponseDto> responseDtoList =
-//                commentService.findUserNameList(findUserNameRequestDto.getUserName());
+//                commentService.findUserNameList(findUserNameRequestDto.getUserName(),commentResponseDto.getComment());
 //
 //    }
 

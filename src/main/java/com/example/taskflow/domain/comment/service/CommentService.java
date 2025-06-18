@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -32,20 +33,21 @@ public class CommentService extends BaseTimeEntity {
         Comment comment = new Comment(taskId,user,comments);
         Comment createcomment = commentResponse.save(comment);
 
-        return new CommentResponseDto(createcomment.getComment(),user.getName(),createcomment.getTasksId(),
+        return new CommentResponseDto(createcomment.getUser().getId(),createcomment.getTasksId(),createcomment.getComment(),
                 createcomment.getIsDeleted(),createcomment.getCreatedAt(),createcomment.getModifiedAt());
 
 
     }
 
-//    public List<findUserNameResponseDto>findUserNameList(String userName,
-//                                                         String detail){
-//        List<User> user = userRepository.findByName(userName);
-//        List<Comment> userNameList = commentResponse.findbyUser(user);
+//    public List<findUserNameResponseDto>findUserNameList(String userName,String comment){
+//        User user = userRepository.findByName(userName);
+//        List<Comment> userNameList = commentResponse.UserAndComment(user,comment);
+//
+//
 //        List<findUserNameResponseDto> userNameResponseDtoList = userNameList
 //                .stream()
 //                .map(findUserNameResponseDto::findUserNameDto)
-//                .toList()
+//                .toList();
 //
 //    }
 

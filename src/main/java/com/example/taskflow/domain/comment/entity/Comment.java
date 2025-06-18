@@ -31,7 +31,6 @@ public class Comment extends BaseTimeEntity {
     private User user;
 
     public Comment(int tasksId,User user,String comment){
-        //this.task = task;
         this.user = user;
         this.tasksId = tasksId;
         this.comment = comment;
