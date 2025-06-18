@@ -1,8 +1,6 @@
 package com.example.taskflow.domain.task.service;
 
 import com.example.taskflow.domain.task.dto.request.TaskRequestDto;
-import com.example.taskflow.domain.task.dto.response.StatusResponseDto;
-import com.example.taskflow.domain.task.dto.response.TaskDetailResponseDto;
 import com.example.taskflow.domain.task.dto.response.TaskResponseDto;
 import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.enums.TaskStatus;
@@ -19,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -42,36 +41,34 @@ public class TaskService {
     /**
      * @param status  작업상태(TODO, IN_PROGRESS, DONE) 필터
      * @param keyword 검색 키워드: 제목과 설명에 들어가는 내용을 검색
+     * @param assigneeId 담당자 ID
      * @param page
      * @param size
      * @return 페이징된 태스크 목록
      */
-    public PageResponse<TaskResponseDto> getTasks(TaskStatus status, String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PageResponse<TaskResponseDto> getTasks(TaskStatus status, String keyword, Long assigneeId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
 
-//        Page<TaskResponseDto> responseDtos = taskRepository.getTasks(status, keyword, pageable)
-//                .map(TaskResponseDto::fromEntity);
-        Page<Task> tasks = taskRepository.getTasks(status, keyword, pageable);
+        Page<Task> tasks = taskRepository.getTasks(status, keyword, assigneeId, pageable);
 
-//        return PageResponse.of(responseDtos.getContent(), responseDtos);
         return PageResponse.of(tasks, TaskResponseDto::fromEntity);
     }
 
     /*
     Task 단건 조회 메서드
-    creator, assignee, comments 연관객체의 정보를 모두 fetch
+    연관객체 assignee를 fetch join
      */
-    public TaskDetailResponseDto getTask(Long taskId) {
-        Task foundTask = taskRepository.findByIdWithDetailAndIsDeletedFalse(taskId)
+    public TaskResponseDto getTask(Long taskId) {
+        Task foundTask = taskRepository.findByIdWithAssigneeAndIsDeletedFalse(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("존재하지 않는 태스크입니다."));
 
-        return TaskDetailResponseDto.fromEntity(foundTask);
+        return TaskResponseDto.fromEntity(foundTask);
     }
 
     /*
     Task 수정 메서드
-    requestDto는 title, description, priority, dueDate, (assignId or status)
-    조회할 때 연관객체 fetch 하지 않고 지연로딩
+    requestDto는 title, description, priority, dueDate, assigneeId
+    조회할 때 연관객체는 fetch join 하지 않고 지연로딩
      */
     @Transactional
     public TaskResponseDto updateTask(String username, Long taskId, TaskRequestDto requestDto) {
@@ -94,7 +91,7 @@ public class TaskService {
     Task 상태는 다음 단계로만 변경 가능
      */
     @Transactional
-    public StatusResponseDto updateStatus(String username, Long taskId, TaskStatus newStatus) {
+    public TaskResponseDto updateStatus(String username, Long taskId, TaskStatus newStatus) {
         User loginUser = userRepository.findByUsernameOrElseThrow(username);
         Task foundTask = findByIdOrElseThrow(taskId);
 
@@ -105,7 +102,7 @@ public class TaskService {
         validateStatusChange(foundTask, newStatus);
         foundTask.updateStatus(newStatus);
 
-        return StatusResponseDto.fromEntity(foundTask);
+        return TaskResponseDto.fromEntity(foundTask);
     }
 
     @Transactional

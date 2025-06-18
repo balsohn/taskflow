@@ -33,7 +33,7 @@ public class Task extends BaseTimeEntity {
     private TaskPriority priority;
 
     @Column(name = "due_date")
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.TODO;
@@ -52,7 +52,7 @@ public class Task extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Task(String title, String description, TaskPriority priority, LocalDate dueDate, User creator, User assignee) {
+    public Task(String title, String description, TaskPriority priority, LocalDateTime dueDate, User creator, User assignee) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -74,7 +74,7 @@ public class Task extends BaseTimeEntity {
         this.id = l;
     }
 
-    public void update(String title, String description, LocalDate dueDate, TaskPriority priority, User assignee) {
+    public void update(String title, String description, LocalDateTime dueDate, TaskPriority priority, User assignee) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
