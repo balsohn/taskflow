@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
 
     @NotBlank
-    private final String detail;
+    private final String comment;
     @NotBlank
     private final String userName;
     //private final Long taskId;
@@ -24,8 +24,8 @@ public class CommentResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime modifiedAt;
 
-    public CommentResponseDto(String detail, String userName, int taskId, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        this.detail = detail;
+    public CommentResponseDto(String comment, String userName, int taskId, Boolean isDeleted, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.comment = comment;
         this.userName = userName;
         //this.taskId = taskId;
         this.taskId = taskId;

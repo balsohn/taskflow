@@ -24,7 +24,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentResponseDto>> signup(@PathVariable Long id, @Valid @RequestBody
                                                                   CommentRequestDto commentRequestDto){
         return new ResponseEntity<>(ApiResponse.success("댓글이 생성되었습니다.",
-                commentService.singup(id,commentRequestDto.getDetail())), HttpStatus.OK);
+                commentService.singup(id,commentRequestDto.getComment())), HttpStatus.OK);
 
     }
 //    @GetMapping()

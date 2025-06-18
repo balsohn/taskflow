@@ -24,15 +24,15 @@ public class CommentService extends BaseTimeEntity {
 
 
     @Transactional
-    public CommentResponseDto singup(Long id,String detail) {
+    public CommentResponseDto singup(Long id,String comments) {
 
         User user = userRepository.findByUserId(id);
         int taskId = 1;
 
-        Comment comment = new Comment(taskId,user,detail);
+        Comment comment = new Comment(taskId,user,comments);
         Comment createcomment = commentResponse.save(comment);
 
-        return new CommentResponseDto(createcomment.getDetail(),user.getName(),createcomment.getTasksId(),
+        return new CommentResponseDto(createcomment.getComment(),user.getName(),createcomment.getTasksId(),
                 createcomment.getIsDeleted(),createcomment.getCreatedAt(),createcomment.getModifiedAt());
 
 
@@ -40,8 +40,12 @@ public class CommentService extends BaseTimeEntity {
 
 //    public List<findUserNameResponseDto>findUserNameList(String userName,
 //                                                         String detail){
-//        List<User> userNameList = userRepository.findByName(userName);
-//        List<findUserNameResponseDto> userNameResponseDtoList
+//        User user = userRepository.findByName(userName);
+//        List<Comment> userNameList = commentResponse.findbyUser(userName);
+//        List<findUserNameResponseDto> userNameResponseDtoList = userNameList
+//                .stream()
+//                .map(findUserNameResponseDto::findUserNameDto)
+//                .toList()
 //
 //    }
 

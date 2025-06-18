@@ -13,17 +13,17 @@ public class findUserNameResponseDto {
     private final String userName;
 
     @NotBlank
-    private final String detail;
+    private final String comment;
 
-    public findUserNameResponseDto(String userName, String detail) {
+    public findUserNameResponseDto(String userName, String comment) {
         this.userName = userName;
-        this.detail = detail;
+        this.comment = comment;
     }
 
     public static findUserNameResponseDto findUserNameDto(Comment comment){
         return findUserNameResponseDto.builder()
                 .userName(comment.getUser().getName())
-                .detail(comment.getDetail())
+                .comment(comment.getComment())
                 .build();
     }
 }
