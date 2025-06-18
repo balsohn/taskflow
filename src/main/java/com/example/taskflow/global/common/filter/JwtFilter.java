@@ -66,6 +66,7 @@ public class JwtFilter implements Filter {
             httpResponse.getWriter().write("{\"error\": \"Unauthorized\"}");
         }
 
+
         // JWT 사용자의 이름을 확인 해보자
         username = jwtUtil.extractUsername(jwt);
 
