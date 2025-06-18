@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -54,6 +55,7 @@ public class UserService {
 
         User user = userRepository.findByUsernameOrElseThrow(loginRequestDto.getUsername());
 
+
         if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
             return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
         }
@@ -76,5 +78,19 @@ public class UserService {
                 saveUser.getIsDeleted(),
                 saveUser.getCreatedAt(),
                 saveUser.getModifiedAt()));
+    }
+
+    @Transactional
+    public ApiResponse deleteUser(String username ,String password) {
+
+        User user = userRepository.findByUsernameOrElseThrow(username);
+
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            return ApiResponse.error("비밀번호가 일치하지 않습니다.");
+        }
+
+        user.delete();
+
+        return ApiResponse.success("회원탈퇴가 완료되었습니다.");
     }
 }

@@ -8,10 +8,12 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Builder
 @Getter
-public class TaskResponseDto {
+@Builder
+public class TaskDetailResponseDto {
 
     private final Long id;
     private final String title;
@@ -25,8 +27,10 @@ public class TaskResponseDto {
     private final UserInfo creator;
     private final UserInfo assignee;
 
-    public static TaskResponseDto fromEntity(Task task) {
-        return TaskResponseDto.builder()
+    private List<CommentInfo> comments;
+
+    public static TaskDetailResponseDto fromEntity(Task task) {
+        return TaskDetailResponseDto.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
@@ -38,6 +42,10 @@ public class TaskResponseDto {
                 .modifiedAt(task.getModifiedAt())
                 .creator(UserInfo.fromUser(task.getCreator()))
                 .assignee(UserInfo.fromUser(task.getAssignee()))
+                .comments(task.getComments().stream()
+                        // TODO: comment 연동하고 동작하는지 확인
+                        .map(CommentInfo::fromComment)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
