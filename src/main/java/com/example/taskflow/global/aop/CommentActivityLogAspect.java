@@ -3,7 +3,7 @@ package com.example.taskflow.global.aop;
 import com.example.taskflow.domain.activitylog.enums.ActionType;
 import com.example.taskflow.domain.activitylog.enums.EntityType;
 import com.example.taskflow.domain.comment.entity.Comment;
-import com.example.taskflow.domain.comment.response.CommentResponse;
+import com.example.taskflow.domain.comment.repository.CommentRepository;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class CommentActivityLogAspect {
 
     private final ActivityLogHelper activityLogHelper;
     // TODO: CommentResponse는 실제로는 Repository인데 인터페이스명이 Response로 되어있음. 나중에 CommentRepository로 변경 필요
-    private final CommentResponse commentResponse; // CommentRepository
+    private final CommentRepository commentRepository; // CommentRepository
 
     // 변경 전 값을 임시 저장하는 ThreadLocal Map
     private final ThreadLocal<Map<String, Object>> commentContext =
@@ -95,13 +95,13 @@ public class CommentActivityLogAspect {
 
             if (commentId != null) {
                 // 기존 댓글 내용 조회
-                Optional<Comment> commentOpt = commentResponse.findById(commentId);
+                Optional<Comment> commentOpt = commentRepository.findById(commentId);
                 if (commentOpt.isPresent()) {
                     Comment oldComment = commentOpt.get();
 
                     Map<String, Object> context = commentContext.get();
                     context.put("commentId", commentId);
-                    context.put("oldContent", oldComment.getDetail());
+                    context.put("oldContent", oldComment.getContent());
 
                     log.debug("Comment 수정 전 정보 저장 완료 - ID: {}", commentId);
                 }
@@ -150,13 +150,13 @@ public class CommentActivityLogAspect {
 
             if (commentId != null) {
                 // 삭제될 댓글 정보 저장
-                Optional<Comment> commentOpt = commentResponse.findById(commentId);
+                Optional<Comment> commentOpt = commentRepository.findById(commentId);
                 if (commentOpt.isPresent()) {
                     Comment comment = commentOpt.get();
 
                     Map<String, Object> context = commentContext.get();
                     context.put("commentId", commentId);
-                    context.put("commentContent", comment.getDetail());
+                    context.put("commentContent", comment.getContent());
 
                     log.debug("Comment 삭제 전 정보 저장 완료 - ID: {}", commentId);
                 }
