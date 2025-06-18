@@ -35,7 +35,6 @@ public class JwtFilter implements Filter {
 
         String requestURI = httpRequest.getRequestURI();
 
-
         String username = null;
         String jwt = null;
 
