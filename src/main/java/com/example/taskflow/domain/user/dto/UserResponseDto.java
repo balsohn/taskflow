@@ -14,6 +14,7 @@ public class UserResponseDto {
     private final String username;
     private final LocalDateTime createdAt;
 
+
     public UserResponseDto(Long id, String username,String email, String name, UserRoleEnum role, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
@@ -22,5 +23,6 @@ public class UserResponseDto {
         this.name = name;
         this.createdAt = createdAt;
     }
+
 
 }
