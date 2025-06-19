@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +35,7 @@ public class TaskServiceTest {
                 "페이지 이동 시 로딩 문제 해결",
                 TaskPriority.HIGH,
                  3L,
-                LocalDate.parse("2025-06-30"));
+                LocalDateTime.parse("2025-06-30T23:59:59Z"));
 
         User creator = new User();
         creator.setId(1L);

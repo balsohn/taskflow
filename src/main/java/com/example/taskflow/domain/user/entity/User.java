@@ -3,9 +3,7 @@ package com.example.taskflow.domain.user.entity;
 import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,9 +22,14 @@ public class User extends BaseTimeEntity {
     // 로그인할때 쓸 아이디
     @NotBlank
     @Column(unique = true)
+    @Pattern(regexp = "^[a-zA-Z0-9]*$")
+    @Size(min =4,max = 20,
+    message = "아이디는 4-20자 그리고 영어나 숫자만 가능합니다.")
     private String username;
 
     @NotEmpty
+    @Size(min = 2,max = 50,
+    message = "이름은 2-50자 내외로 설정해주세요")
     private String name;
 
     @NotEmpty
