@@ -1,6 +1,6 @@
 package com.example.taskflow.domain.comment.service;
 
-import com.example.taskflow.domain.comment.dto.CommentDeleteResPonsserDto;
+import com.example.taskflow.domain.comment.dto.CommentDeleteResponseDto;
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
 import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
 import com.example.taskflow.domain.comment.entity.Comment;
@@ -9,7 +9,6 @@ import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
-import com.example.taskflow.global.common.ApiResponse;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import com.example.taskflow.global.common.dto.PageResponse;
 import com.example.taskflow.global.exception.custom.CommentNotFoundException;
@@ -22,13 +21,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 
 @RequiredArgsConstructor
 @Service
-public class CommentService extends BaseTimeEntity {
+public class CommentService {
     private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
@@ -56,13 +52,16 @@ public class CommentService extends BaseTimeEntity {
 
     }
 
-    public CommentDeleteResPonsserDto deleteComment(Long commentId){
-        Comment commentsId = commentRepository.findById(commentId).
-                orElseThrow(()-> new CommentNotFoundException("존재하는 댓글이 없습니다."));
+    public CommentDeleteResponseDto deleteComment(Long taskId){
+        Comment commentsId = commentRepository.findByTaskId(taskId).
+                orElseThrow(()->new CommentNotFoundException("존재하지 않는 태스크입니다."));
 
-        commentsId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+        if(commentsId.getTask().getId().equals(taskId)) {
+            commentsId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+        }
 
-        return new CommentDeleteResPonsserDto(commentsId.getIsDeleted(),commentsId.getDeletedAt());
+        return new CommentDeleteResponseDto(commentsId.getIsDeleted(),commentsId.getDeletedAt());
+
     }
 
 }

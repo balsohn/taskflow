@@ -6,15 +6,15 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class CommentDeleteResPonsserDto {
+public class CommentDeleteResponseDto {
 
     private Boolean isDeleted = false;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime deletedAt;
 
-    public CommentDeleteResPonsserDto(Boolean isDeleted,
-                                      LocalDateTime deletedAt) {
+    public CommentDeleteResponseDto(Boolean isDeleted,
+                                    LocalDateTime deletedAt) {
         this.isDeleted = isDeleted;
         this.deletedAt = deletedAt;
     }
