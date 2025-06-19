@@ -2,8 +2,6 @@ package com.example.taskflow.domain.comment.dto;
 
 import com.example.taskflow.domain.comment.entity.Comment;
 import com.example.taskflow.domain.task.dto.response.UserInfo;
-import com.example.taskflow.domain.user.dto.UserResponseDto;
-import com.example.taskflow.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -20,7 +18,7 @@ public class findUserNameResponseDto{
     private final String content;
     private final Long taskId;
     private final Long userId;
-    private UserInfo User;
+    private UserInfo user;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final LocalDateTime createdAt;
 
@@ -35,7 +33,7 @@ public class findUserNameResponseDto{
         this.content = content;
         this.taskId = taskId;
         this.userId = userId;
-        this.User = user;
+        this.user = user;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

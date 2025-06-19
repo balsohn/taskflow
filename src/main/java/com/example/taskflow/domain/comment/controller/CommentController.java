@@ -1,6 +1,6 @@
 package com.example.taskflow.domain.comment.controller;
 
-import com.example.taskflow.domain.comment.dto.CommentDeleteResPonsserDto;
+import com.example.taskflow.domain.comment.dto.CommentDeleteResponseDto;
 import com.example.taskflow.domain.comment.dto.CommentRequestDto;
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
 import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
@@ -45,15 +45,19 @@ public class CommentController {
         PageResponse<findUserNameResponseDto> responseDtoList =
                 commentService.findUserNameList(content,taskId,pageable);
 
-        return new ResponseEntity<>(ApiResponse.success("댓글 조회를 성공하였습니다.",responseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.success("댓글 목록을 조회했습니다.",responseDtoList),HttpStatus.OK);
 
     }
 
-    @DeleteMapping("/{commentId}/comments")
-    public ResponseEntity<ApiResponse<CommentDeleteResPonsserDto>>deleteComment(@PathVariable Long commentId) {
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<ApiResponse<CommentDeleteResponseDto>>deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal User user) {
 
-        CommentDeleteResPonsserDto commentDeleteResPonsserDto =
-                commentService.deleteComment(commentId);
+        String username = user.getUsername();
+
+        CommentDeleteResponseDto commentDeleteResPonsserDto =
+                commentService.deleteComment(commentId,username);
 
         return new ResponseEntity<>(ApiResponse.success("댓글이 삭제되었습니다.",commentDeleteResPonsserDto),HttpStatus.OK);
 
