@@ -6,6 +6,7 @@ import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.ApiResponse;
+import com.example.taskflow.global.common.dto.TokenResponseDto;
 import com.example.taskflow.global.common.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class UserService {
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
 
-        return ApiResponse.success("로그인 성공",token);
+        return ApiResponse.success("로그인 성공", new TokenResponseDto(token));
     }
 
     // 프로필 조회
