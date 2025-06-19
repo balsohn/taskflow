@@ -21,14 +21,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/auth")
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
     // 회원가입
-    @PostMapping("/register")
+    @PostMapping("/api/auth/register")
     public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
         ApiResponse signupDto = userService.createUser(userRequestDto);
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @PostMapping("/api/auth/login")
     public ResponseEntity<ApiResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
 
         ApiResponse login = userService.login(loginRequestDto);
@@ -47,7 +46,7 @@ public class UserController {
     }
 
     // 유저 조회
-    @GetMapping("/users/me")
+    @GetMapping("/api/users/me")
     public ResponseEntity<ApiResponse> myProfile(@AuthenticationPrincipal User user) {
 
         ApiResponse myProfile = userService.myProfile(user.getUsername());
@@ -56,7 +55,7 @@ public class UserController {
     }
 
     // 유저 삭제
-    @DeleteMapping("/withdraw")
+    @DeleteMapping("/api/auth/withdraw")
     public ResponseEntity<ApiResponse> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
                                                   @RequestBody
                                                   DeleteUserRequestDto deleteUserRequestDto) {
