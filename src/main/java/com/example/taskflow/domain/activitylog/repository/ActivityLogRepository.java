@@ -26,8 +26,8 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
             WHERE al.isDeleted = false
             AND (:actionType IS NULL OR al.actionType = :actionType)
             AND (:entityId IS NULL OR al.entityId = :entityId)
-            AND (:startDate IS NULL OR al.startDate = :startDate)
-            AND (:endDate IS NULL OR al.endDate = :endDate)
+            AND (:startDate IS NULL OR al.createdAt = :startDate)
+            AND (:endDate IS NULL OR al.createdAt = :endDate)
             AND (:userId IS NULL OR al.user.id = :userId)
             """)
     Page<ActivityLog> findActivityLogsWithFilters(
@@ -46,8 +46,8 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
             AND al.user.id = :userId
             AND (:actionType IS NULL OR al.actionType = :actionType)
             AND (:entityId IS NULL OR al.entityId = :entityId)
-            AND (:startDate IS NULL OR al.startDate = :startDate)
-            AND (:endDate IS NULL OR al.endDate = :endDate)
+            AND (:startDate IS NULL OR al.createdAt = :startDate)
+            AND (:endDate IS NULL OR al.createdAt = :endDate)
             """)
     Page<ActivityLog> findUserActivityLogsWithFilters(
             @Param("userId") Long userId,
