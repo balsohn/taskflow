@@ -70,8 +70,7 @@ public class JwtUtil {
     public String generateToken(String username, UserRoleEnum userRole) {
         Date date = new Date();
 
-        return BEARER_PREFIX +
-                Jwts.builder()
+        return Jwts.builder()
                         .setSubject(username) // 사용자 식별자 (ID)
                         .claim("auth", userRole) // 사용자 권한 (역할)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간 설정

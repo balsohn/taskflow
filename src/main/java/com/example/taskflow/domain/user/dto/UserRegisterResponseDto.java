@@ -6,23 +6,22 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class UserResponseDto {
+public class UserRegisterResponseDto {
     private final Long id;
     private final String name;
     private final String email;
     private final UserRoleEnum role;
     private final String username;
     private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAt;
 
-
-    public UserResponseDto(Long id, String username,String email, String name, UserRoleEnum role, LocalDateTime createdAt) {
+    public UserRegisterResponseDto(Long id, String name, String email, UserRoleEnum role, String username, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
-        this.username = username;
+        this.name = name;
         this.email = email;
         this.role = role;
-        this.name = name;
+        this.username = username;
         this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
-
-
 }

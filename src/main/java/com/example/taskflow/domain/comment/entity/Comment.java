@@ -18,9 +18,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String detail;
-
-    private int tasksId;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "task_id")
@@ -30,11 +28,10 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(int tasksId,User user,String detail){
-        //this.task = task;
-        this.user = user;
-        this.tasksId = tasksId;
-        this.detail = detail;
+    public Comment(Task tasksId,User userId,String content){
+        this.user = userId;
+        this.task = tasksId;
+        this.content = content;
     }
 
 }

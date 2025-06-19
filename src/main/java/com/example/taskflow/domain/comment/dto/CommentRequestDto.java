@@ -7,9 +7,9 @@ import lombok.Getter;
 public class CommentRequestDto {
 
     @Size(min = 5,max = 30,message = "댓글은 5자이상 30자 이하로 입력해주세요.")
-    private final String detail;
+    private final String content;
 
-    public CommentRequestDto(String detail) {
-        this.detail = detail;
+    public CommentRequestDto(String content) {
+        this.content = content;
     }
 }
