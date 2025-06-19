@@ -49,11 +49,11 @@ public class CommentController {
 
     }
 
-    @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentDeleteResponseDto>>deleteComment(@PathVariable Long commentId) {
+    @DeleteMapping("/comments/{taskId}")
+    public ResponseEntity<ApiResponse<CommentDeleteResponseDto>>deleteComment(@PathVariable Long taskId) {
 
         CommentDeleteResponseDto commentDeleteResPonsserDto =
-                commentService.deleteComment(commentId);
+                commentService.deleteComment(taskId);
 
         return new ResponseEntity<>(ApiResponse.success("댓글이 삭제되었습니다.",commentDeleteResPonsserDto),HttpStatus.OK);
 
