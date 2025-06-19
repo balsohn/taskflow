@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class findUserNameResponseDto<T> {
+public class findUserNameResponseDto{
     @NotBlank
     private final Long id;
     @NotBlank

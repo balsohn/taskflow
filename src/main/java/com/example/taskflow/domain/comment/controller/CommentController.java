@@ -1,5 +1,6 @@
 package com.example.taskflow.domain.comment.controller;
 
+import com.example.taskflow.domain.comment.dto.CommentDeleteResPonsserDto;
 import com.example.taskflow.domain.comment.dto.CommentRequestDto;
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
 import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
@@ -30,7 +31,7 @@ public class CommentController {
             ){
         String username = user.getUsername();
 
-        CommentResponseDto commentResponseDto = commentService.singup(taskId,username,commentRequestDto.getContent());
+        CommentResponseDto commentResponseDto = commentService.signUp(taskId,username,commentRequestDto.getContent());
 
         return new ResponseEntity<>(ApiResponse.success("댓글이 생성되었습니다.",
                 commentResponseDto), HttpStatus.OK);
@@ -39,19 +40,22 @@ public class CommentController {
     @GetMapping("/{taskId}/comments")
     public ResponseEntity<ApiResponse<PageResponse<findUserNameResponseDto>>> findUserName
             (@PathVariable Long taskId,
-             Pageable pageable) {
+             Pageable pageable,
+             @RequestParam String content) {
         PageResponse<findUserNameResponseDto> responseDtoList =
-                commentService.findUserNameList(taskId,pageable);
+                commentService.findUserNameList(content,taskId,pageable);
 
         return new ResponseEntity<>(ApiResponse.success("댓글 조회를 성공하였습니다.",responseDtoList),HttpStatus.OK);
 
     }
+
     @DeleteMapping("/{commentId}/comments")
-    public ResponseEntity<ApiResponse<Void>>deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<ApiResponse<CommentDeleteResPonsserDto>>deleteComment(@PathVariable Long commentId) {
 
-        commentService.deleteComment(commentId);
+        CommentDeleteResPonsserDto commentDeleteResPonsserDto =
+                commentService.deleteComment(commentId);
 
-        return new ResponseEntity<>(ApiResponse.success("댓글이 삭제되었습니다."),HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.success("댓글이 삭제되었습니다.",commentDeleteResPonsserDto),HttpStatus.OK);
 
     }
 }

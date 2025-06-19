@@ -1,5 +1,6 @@
 package com.example.taskflow.domain.comment.service;
 
+import com.example.taskflow.domain.comment.dto.CommentDeleteResPonsserDto;
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
 import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
 import com.example.taskflow.domain.comment.entity.Comment;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -30,7 +32,7 @@ public class CommentService extends BaseTimeEntity {
 
 
     @Transactional
-    public CommentResponseDto singup(Long takeId,String userName,String content) {
+    public CommentResponseDto signUp(Long takeId,String userName,String content) {
 
         User user = userRepository.findByUsername(userName).get();
         Task task = taskRepository.findById(takeId).get();
@@ -39,23 +41,24 @@ public class CommentService extends BaseTimeEntity {
         Comment createcomment = commentRepository.save(comment);
 
         return CommentResponseDto.commentResponsesDto(createcomment);
-
-
     }
 
-    public PageResponse<findUserNameResponseDto> findUserNameList(Long taskId, Pageable pageables){
+    public PageResponse<findUserNameResponseDto> findUserNameList(String content,Long taskId, Pageable pageables){
 
         PageRequest pageable = PageRequest.of(pageables.getPageNumber(),pageables.getPageSize(),Sort.by("createdAt").descending());
-        Page<Comment> commentPage = commentRepository.findAllByTaskId(taskId,pageable);
+        System.out.println(content);
+        Page<Comment> commentPage = commentRepository.findByTaskIdAndContentContaining(taskId,content,pageable);
 
         return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 
     }
 
-    public void deleteComment(Long takeId){
+    public CommentDeleteResPonsserDto deleteComment(Long takeId){
         Comment commentId = commentRepository.findById(takeId).get();
 
-        commentId.delete();
+        commentId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+
+        return new CommentDeleteResPonsserDto(commentId.getIsDeleted(),commentId.getDeletedAt());
     }
 
 }
