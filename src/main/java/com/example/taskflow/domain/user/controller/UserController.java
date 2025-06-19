@@ -55,7 +55,7 @@ public class UserController {
     }
 
     // 유저 삭제
-    @DeleteMapping("/api/auth/withdraw")
+    @PostMapping("/api/auth/withdraw")
     public ResponseEntity<ApiResponse> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
                                                   @RequestBody
                                                   DeleteUserRequestDto deleteUserRequestDto) {
