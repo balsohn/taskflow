@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -48,6 +50,12 @@ public class CommentService extends BaseTimeEntity {
 
         return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 
+    }
+
+    public void deleteComment(Long takeId){
+        Comment commentId = commentRepository.findById(takeId).get();
+
+        commentId.delete();
     }
 
 }

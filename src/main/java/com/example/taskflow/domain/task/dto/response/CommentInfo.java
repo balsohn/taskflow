@@ -1,12 +1,13 @@
 package com.example.taskflow.domain.task.dto.response;
 
 import com.example.taskflow.domain.comment.entity.Comment;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @Getter
 public class CommentInfo {
 
