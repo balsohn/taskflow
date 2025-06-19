@@ -24,5 +24,4 @@ public class UserResponseDto {
         this.createdAt = createdAt;
     }
 
-
 }

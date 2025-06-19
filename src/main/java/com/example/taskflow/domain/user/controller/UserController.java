@@ -1,6 +1,7 @@
 package com.example.taskflow.domain.user.controller;
 
 import com.example.taskflow.domain.user.dto.DeleteUserRequestDto;
+import com.example.taskflow.domain.user.dto.FindUsernameResponseDto;
 import com.example.taskflow.domain.user.dto.LoginRequestDto;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
 import com.example.taskflow.domain.user.service.UserService;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Controller
@@ -55,7 +58,7 @@ public class UserController {
     }
 
     // 유저 삭제
-    @DeleteMapping("/api/auth/withdraw")
+    @PostMapping("/api/auth/withdraw")
     public ResponseEntity<ApiResponse> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
                                                   @RequestBody
                                                   DeleteUserRequestDto deleteUserRequestDto) {
@@ -65,12 +68,12 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-//     로그아웃
-//    @PostMapping("/logout")
-//    public ResponseEntity<ApiResponse> logout(@AuthenticationPrincipal UserDetails userDetails){
-//
-//        userService.logout(userDetails.getUsername());
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    // 유저 조회
+    @GetMapping("/api/users")
+    public ResponseEntity<ApiResponse<List<FindUsernameResponseDto>>> findUserList(){
+
+        ApiResponse<List<FindUsernameResponseDto>> userList = userService.findUserList();
+
+        return new ResponseEntity<>(userList,HttpStatus.OK);
+    }
 }

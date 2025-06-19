@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -67,27 +69,55 @@ public class ActivityLogService {
     }
 
     /**
-     * 전체  활동 로그 조회 (관리자용)
+     * 전체  활동 로그 조회 (관리자용) - 필터링 지원
      */
-    public PageResponse<ActivityLogResponse> getAllActivityLogs(int page, int size) {
+    public PageResponse<ActivityLogResponse> getAllActivityLogs(
+            ActionType actionType,
+            Long entityId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            int page, int size) {
+
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ActivityLog> logs = activityLogRepository.findByIsDeletedFalse(pageable);
+
+        Page<ActivityLog> logs = activityLogRepository.findActivityLogsWithFilters(
+                actionType, entityId, startDate, endDate, null, pageable);
 
         return PageResponse.of(logs, ActivityLogMapper::toResponse);
     }
 
     /**
-     * 사용자별 활동 로그
+     * 사용자별 활동 로그 - 필터링 지원
      */
-    public PageResponse<ActivityLogResponse> getUserActivityLogs(Long userId, int page, int size) {
+    public PageResponse<ActivityLogResponse> getUserActivityLogs(
+            Long userId,
+            ActionType actionType,
+            Long entityId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            int page, int size) {
+
         // 사용자 존재 확인
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException(userId);
         }
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ActivityLog> logs = activityLogRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
+
+        Page<ActivityLog> logs = activityLogRepository.findUserActivityLogsWithFilters(
+                userId, actionType, entityId, startDate, endDate, pageable);
 
         return PageResponse.of(logs, ActivityLogMapper::toResponse);
+    }
+
+    /**
+     * 기존 메서드들 (하위 호환성을 위해 유지)
+     */
+    public PageResponse<ActivityLogResponse> getAllActivityLogs(int page, int size) {
+        return getAllActivityLogs(null, null, null, null, page, size);
+    }
+
+    public PageResponse<ActivityLogResponse> getUserActivityLogs(Long userId, int page, int size) {
+        return getUserActivityLogs(userId, null, null, null, null, page, size);
     }
 
 }
