@@ -3,10 +3,6 @@ package com.example.taskflow.domain.user.dto;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.enums.UserRoleEnum;
 import lombok.Getter;
-//"id": 1,
-//            "email": "test@test.com",
-//            "name": "테스트 사용자",
-//            "role": "USER"
 
 @Getter
 public class FindUsernameResponseDto {
