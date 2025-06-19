@@ -9,8 +9,11 @@ import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
+import com.example.taskflow.global.common.ApiResponse;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import com.example.taskflow.global.common.dto.PageResponse;
+import com.example.taskflow.global.exception.custom.CommentNotFoundException;
+import com.example.taskflow.global.exception.custom.TaskNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,10 +35,11 @@ public class CommentService extends BaseTimeEntity {
 
 
     @Transactional
-    public CommentResponseDto signUp(Long takeId,String userName,String content) {
+    public CommentResponseDto signUp(Long taskId,String userName,String content) {
 
-        User user = userRepository.findByUsername(userName).get();
-        Task task = taskRepository.findById(takeId).get();
+        User user = userRepository.findByUsernameOrElseThrow(userName);
+        Task task = taskRepository.findByIdWithAssigneeAndIsDeletedFalse(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("존재하지 않는 태스크입니다."));
 
         Comment comment = new Comment(task,user,content);
         Comment createcomment = commentRepository.save(comment);
@@ -46,19 +50,19 @@ public class CommentService extends BaseTimeEntity {
     public PageResponse<findUserNameResponseDto> findUserNameList(String content,Long taskId, Pageable pageables){
 
         PageRequest pageable = PageRequest.of(pageables.getPageNumber(),pageables.getPageSize(),Sort.by("createdAt").descending());
-        System.out.println(content);
         Page<Comment> commentPage = commentRepository.findByTaskIdAndContentContaining(taskId,content,pageable);
 
         return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 
     }
 
-    public CommentDeleteResPonsserDto deleteComment(Long takeId){
-        Comment commentId = commentRepository.findById(takeId).get();
+    public CommentDeleteResPonsserDto deleteComment(Long commentId){
+        Comment commentsId = commentRepository.findById(commentId).
+                orElseThrow(()-> new CommentNotFoundException("존재하는 댓글이 없습니다."));
 
-        commentId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+        commentsId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
 
-        return new CommentDeleteResPonsserDto(commentId.getIsDeleted(),commentId.getDeletedAt());
+        return new CommentDeleteResPonsserDto(commentsId.getIsDeleted(),commentsId.getDeletedAt());
     }
 
 }

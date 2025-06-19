@@ -2,8 +2,6 @@ package com.example.taskflow.domain.comment.dto;
 
 import com.example.taskflow.domain.comment.entity.Comment;
 import com.example.taskflow.domain.task.dto.response.UserInfo;
-import com.example.taskflow.domain.user.dto.UserResponseDto;
-import com.example.taskflow.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

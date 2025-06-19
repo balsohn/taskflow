@@ -45,7 +45,7 @@ public class CommentController {
         PageResponse<findUserNameResponseDto> responseDtoList =
                 commentService.findUserNameList(content,taskId,pageable);
 
-        return new ResponseEntity<>(ApiResponse.success("댓글 조회를 성공하였습니다.",responseDtoList),HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.success("댓글 목록을 조회했습니다.",responseDtoList),HttpStatus.OK);
 
     }
 
