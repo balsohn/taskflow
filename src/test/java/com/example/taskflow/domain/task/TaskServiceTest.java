@@ -35,7 +35,7 @@ public class TaskServiceTest {
                 "페이지 이동 시 로딩 문제 해결",
                 TaskPriority.HIGH,
                  3L,
-                LocalDateTime.parse("2025-06-30"));
+                LocalDateTime.parse("2025-06-30T23:59:59Z"));
 
         User creator = new User();
         creator.setId(1L);
