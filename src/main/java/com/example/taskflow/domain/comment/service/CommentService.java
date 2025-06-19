@@ -11,7 +11,6 @@ import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import com.example.taskflow.global.common.dto.PageResponse;
-import com.example.taskflow.global.exception.custom.CommentNotFoundException;
 import com.example.taskflow.global.exception.custom.TaskNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class CommentService {
+public class CommentService{
     private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
@@ -52,15 +51,16 @@ public class CommentService {
 
     }
 
-    public CommentDeleteResponseDto deleteComment(Long taskId){
-        Comment commentsId = commentRepository.findByTaskId(taskId).
-                orElseThrow(()->new CommentNotFoundException("존재하지 않는 태스크입니다."));
+    public CommentDeleteResponseDto deleteComment(Long commentId,String userName){
 
-        if(commentsId.getTask().getId().equals(taskId)) {
-            commentsId.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+        Comment comment = commentRepository.findById(commentId).
+                orElseThrow(()->new TaskNotFoundException("존재하지 않는 댓글입니다."));
+
+        if(userName.equals(comment.getUser().getUsername())) {
+            comment.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
         }
 
-        return new CommentDeleteResponseDto(commentsId.getIsDeleted(),commentsId.getDeletedAt());
+        return new CommentDeleteResponseDto(comment.getIsDeleted(),comment.getDeletedAt());
 
     }
 
