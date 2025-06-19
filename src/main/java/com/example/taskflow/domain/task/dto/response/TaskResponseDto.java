@@ -6,7 +6,6 @@ import com.example.taskflow.domain.task.enums.TaskStatus;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,11 +17,10 @@ public class TaskResponseDto {
     private final String description;
     private final TaskPriority priority;
     private final TaskStatus status;
-    private final LocalDate dueDate;
-    private final LocalDateTime startedAt;
+    private final LocalDateTime dueDate;
     private final LocalDateTime createdAt;
-    private final LocalDateTime modifiedAt;
-    private final UserInfo creator;
+    private final LocalDateTime updatedAt;
+    private final Long assigneeId;
     private final UserInfo assignee;
 
     public static TaskResponseDto fromEntity(Task task) {
@@ -33,10 +31,9 @@ public class TaskResponseDto {
                 .priority(task.getPriority())
                 .status(task.getStatus())
                 .dueDate(task.getDueDate())
-                .startedAt(task.getStartedAt())
                 .createdAt(task.getCreatedAt())
-                .modifiedAt(task.getModifiedAt())
-                .creator(UserInfo.fromUser(task.getCreator()))
+                .updatedAt(task.getModifiedAt())
+                .assigneeId(task.getAssignee().getId())
                 .assignee(UserInfo.fromUser(task.getAssignee()))
                 .build();
     }

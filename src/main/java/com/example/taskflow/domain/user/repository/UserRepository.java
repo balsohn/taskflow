@@ -29,9 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // username 중복 검증
     boolean existsByUsername(String username);
 
-
     // email 중복 검증
     boolean existsByemail(String email);
 
-    List<User> findByName(String name);
+    User findByName(String name);
 }
