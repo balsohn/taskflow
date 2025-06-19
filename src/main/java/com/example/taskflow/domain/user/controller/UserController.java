@@ -5,6 +5,7 @@ import com.example.taskflow.domain.user.dto.LoginRequestDto;
 import com.example.taskflow.domain.user.dto.UserRequestDto;
 import com.example.taskflow.domain.user.service.UserService;
 import com.example.taskflow.global.common.ApiResponse;
+import com.example.taskflow.global.common.utils.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth")
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     // 회원가입
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
         ApiResponse signupDto = userService.createUser(userRequestDto);
@@ -40,11 +42,12 @@ public class UserController {
 
         ApiResponse login = userService.login(loginRequestDto);
 
+
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
 
     // 유저 조회
-    @GetMapping("/profile")
+    @GetMapping("/users/me")
     public ResponseEntity<ApiResponse> myProfile(@AuthenticationPrincipal User user) {
 
         ApiResponse myProfile = userService.myProfile(user.getUsername());
@@ -53,7 +56,7 @@ public class UserController {
     }
 
     // 유저 삭제
-    @DeleteMapping("/delete")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<ApiResponse> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
                                                   @RequestBody
                                                   DeleteUserRequestDto deleteUserRequestDto) {
@@ -63,5 +66,12 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-
+//     로그아웃
+//    @PostMapping("/logout")
+//    public ResponseEntity<ApiResponse> logout(@AuthenticationPrincipal UserDetails userDetails){
+//
+//        userService.logout(userDetails.getUsername());
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 }

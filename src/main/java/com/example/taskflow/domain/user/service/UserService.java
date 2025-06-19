@@ -6,7 +6,6 @@ import com.example.taskflow.domain.user.dto.UserResponseDto;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.ApiResponse;
-import com.example.taskflow.global.common.dto.TokenResponseDto;
 import com.example.taskflow.global.common.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,12 +63,9 @@ public class UserService {
             return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
         }
 
-        TokenResponseDto token = jwtUtil.generateTokens(user.getUsername(), user.getRole());
+        String accessToken = jwtUtil.generateToken(user.getUsername(), user.getRole());
 
-        log.info(token.getAccessToken());
-        log.info(token.getRefreshToken());
-
-        return ApiResponse.success("로그인 성공",token);
+        return ApiResponse.success("로그인 성공",accessToken);
     }
 
     // 프로필 조회
@@ -91,6 +87,7 @@ public class UserService {
                 saveUser.getModifiedAt()));
     }
 
+    // 회원 탈퇴 로직
     @Transactional
     public ApiResponse deleteUser(String username ,String password) {
 
@@ -104,4 +101,13 @@ public class UserService {
 
         return ApiResponse.success("회원탈퇴가 완료되었습니다.");
     }
+
+//    public ApiResponse logout(String username) {
+//
+//        User user = userRepository.findByUsernameOrElseThrow(username);
+//
+//
+//
+//        return ApiResponse.success("로그아웃 되었습니다.");
+//    }
 }
