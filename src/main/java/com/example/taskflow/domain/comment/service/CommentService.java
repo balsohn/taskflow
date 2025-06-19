@@ -12,6 +12,7 @@ import com.example.taskflow.domain.user.repository.UserRepository;
 import com.example.taskflow.global.common.BaseTimeEntity;
 import com.example.taskflow.global.common.dto.PageResponse;
 import com.example.taskflow.global.exception.custom.TaskNotFoundException;
+import com.example.taskflow.global.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,10 +57,11 @@ public class CommentService{
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(()->new TaskNotFoundException("존재하지 않는 댓글입니다."));
 
-        if(userName.equals(comment.getUser().getUsername())) {
-            comment.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
+        if(!userName.equals(comment.getUser().getUsername())) {
+            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
         }
 
+        comment.delete();//엔티티에 값 변동을 위해 메서드 호출 로직 > 호출 후 값변동
         return new CommentDeleteResponseDto(comment.getIsDeleted(),comment.getDeletedAt());
 
     }
