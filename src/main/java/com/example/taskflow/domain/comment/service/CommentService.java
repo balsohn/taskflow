@@ -36,8 +36,7 @@ public class CommentService extends BaseTimeEntity {
         Comment comment = new Comment(task,user,content);
         Comment createcomment = commentRepository.save(comment);
 
-        return new CommentResponseDto(user.getId(),task.getId(),createcomment.getContent(),
-                createcomment.getIsDeleted(),createcomment.getCreatedAt(),createcomment.getModifiedAt());
+        return CommentResponseDto.commentResponsesDto(createcomment);
 
 
     }
@@ -50,6 +49,5 @@ public class CommentService extends BaseTimeEntity {
         return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 
     }
-
 
 }
