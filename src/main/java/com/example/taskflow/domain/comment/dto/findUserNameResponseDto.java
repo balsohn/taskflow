@@ -11,7 +11,6 @@ public class findUserNameResponseDto {
 
     @NotBlank
     private final String userName;
-
     @NotBlank
     private final String content;
 
@@ -21,9 +20,6 @@ public class findUserNameResponseDto {
     }
 
     public static findUserNameResponseDto findUserNameDto(Comment comment){
-        return findUserNameResponseDto.builder()
-                .userName(comment.getUser().getName())
-                .content(comment.getContent())
-                .build();
+        return new findUserNameResponseDto(comment.getUser().getName(),comment.getContent());
     }
 }

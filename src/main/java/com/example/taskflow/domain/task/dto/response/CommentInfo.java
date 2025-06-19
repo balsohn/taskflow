@@ -19,7 +19,7 @@ public class CommentInfo {
     public static CommentInfo fromComment(Comment comment) {
         return CommentInfo.builder()
                 .id(comment.getId())
-                .comment(comment.getDetail())
+                .comment(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .user(UserInfo.fromUser(comment.getUser()))

@@ -1,10 +1,10 @@
 package com.example.taskflow.domain.comment.service;
 
-import com.example.taskflow.domain.activitylog.entity.ActivityLog;
 import com.example.taskflow.domain.comment.dto.CommentResponseDto;
 import com.example.taskflow.domain.comment.dto.findUserNameResponseDto;
 import com.example.taskflow.domain.comment.entity.Comment;
 import com.example.taskflow.domain.comment.repository.CommentRepository;
+import com.example.taskflow.domain.task.entity.Task;
 import com.example.taskflow.domain.task.repository.TaskRepository;
 import com.example.taskflow.domain.user.entity.User;
 import com.example.taskflow.domain.user.repository.UserRepository;
@@ -13,50 +13,41 @@ import com.example.taskflow.global.common.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @RequiredArgsConstructor
 @Service
 public class CommentService extends BaseTimeEntity {
-    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
-    private final CommentRepository commentResponse;
+    private final UserRepository userRepository;
 
 
     @Transactional
-    public CommentResponseDto singup(Long taskId,String content) {
+    public CommentResponseDto singup(Long takeId,String userName,String content) {
 
-        User user = userRepository.findById(taskId).get();
-        int tasksId = 1;
+        User user = userRepository.findByUsername(userName).get();
+        Task task = taskRepository.findById(takeId).get();
 
-        Comment comment = new Comment(tasksId,user,content);
-        Comment createcomment = commentResponse.save(comment);
+        Comment comment = new Comment(task,user,content);
+        Comment createcomment = commentRepository.save(comment);
 
-        return new CommentResponseDto(createcomment.getUser().getId(),createcomment.getTasksId(),createcomment.getContent(),
+        return new CommentResponseDto(user.getId(),task.getId(),createcomment.getContent(),
                 createcomment.getIsDeleted(),createcomment.getCreatedAt(),createcomment.getModifiedAt());
 
 
     }
 
-    public PageResponse<findUserNameResponseDto> findUserNameList(String userName, String comment,int page,int size){
-        User user = userRepository.findByName(userName);
-        List<Comment> userNameList = commentResponse.findByUserAndContent(user,comment);
+    public PageResponse<findUserNameResponseDto> findUserNameList(Long taskId, Pageable pageables){
 
-        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Comment> logs = commentResponse.findAll(pageable);
+        PageRequest pageable = PageRequest.of(pageables.getPageNumber(),pageables.getPageSize(),Sort.by("createdAt").descending());
+        Page<Comment> commentPage = commentRepository.findAllByTaskId(taskId,pageable);
 
-
-        List<findUserNameResponseDto> userNameResponseDtoList = userNameList
-                .stream()
-                .map(findUserNameResponseDto::findUserNameDto)
-                .toList();
-
-        return PageResponse.of(userNameResponseDtoList,logs);
+        return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 
     }
 

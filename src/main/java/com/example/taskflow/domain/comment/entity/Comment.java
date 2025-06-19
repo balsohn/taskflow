@@ -20,19 +20,17 @@ public class Comment extends BaseTimeEntity {
 
     private String content;
 
-    private int tasksId;
-
     @ManyToOne
-    @JoinColumn(name = "taskId")
+    @JoinColumn(name = "task_id")
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(int tasksId,User user,String content){
-        this.user = user;
-        this.tasksId = tasksId;
+    public Comment(Task tasksId,User userId,String content){
+        this.user = userId;
+        this.task = tasksId;
         this.content = content;
     }
 
