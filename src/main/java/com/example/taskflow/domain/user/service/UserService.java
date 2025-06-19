@@ -63,9 +63,9 @@ public class UserService {
             return ApiResponse.error("잘못된 사용자명 또는 비밀번호입니다");
         }
 
-        String accessToken = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
 
-        return ApiResponse.success("로그인 성공",accessToken);
+        return ApiResponse.success("로그인 성공",token);
     }
 
     // 프로필 조회
