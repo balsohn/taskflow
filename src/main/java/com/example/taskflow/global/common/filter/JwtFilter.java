@@ -41,7 +41,7 @@ public class JwtFilter implements Filter {
         String authorizationHeader = httpRequest.getHeader("Authorization");
 
         // 처음 로그인 하는 거야? 그럼 JWT 토큰이 없을 것이니 토큰 먼저 발급 받아!
-        if( requestURI.equals("/api/users") || requestURI.equals("/api/users/login")) {
+        if( requestURI.equals("/api/auth/register") || requestURI.equals("/api/auth/login")) {
             chain.doFilter(request,response);
             return;
         }

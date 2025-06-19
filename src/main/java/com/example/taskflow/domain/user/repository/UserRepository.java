@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     default User findByUsernameOrElseThrow(String username){
-       return findByUsername(username).orElseThrow(()->new IllegalArgumentException("아이디를 찾지 못했습니다"));
+       return findByUsername(username).orElseThrow(()->new IllegalArgumentException("잘못된 사용자명 또는 비밀번호입니다"));
     }
 
     // id 기반 조회
