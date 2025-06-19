@@ -17,16 +17,16 @@ public class ActivityLogResponse {
 
     private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String type;
+
+    private Long userId;
+
+    private UserInfo user;
+
+    private Long taskId;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime timestamp;
-
-    private String name;
-
-    private String actionType;
-
-    private String entityType;
-
-    private Long entityId;
 
     private String description;
 
