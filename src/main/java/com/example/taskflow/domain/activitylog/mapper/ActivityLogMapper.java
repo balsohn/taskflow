@@ -1,86 +1,70 @@
 package com.example.taskflow.domain.activitylog.mapper;
 
 import com.example.taskflow.domain.activitylog.dto.ActivityLogResponse;
-import com.example.taskflow.domain.activitylog.dto.SecurityDataDto;
-import com.example.taskflow.domain.activitylog.dto.UserInfoDto;
 import com.example.taskflow.domain.activitylog.entity.ActivityLog;
-import com.example.taskflow.domain.user.entity.User;
 
 public class ActivityLogMapper {
 
+    /**
+     * ActivityLog 엔티티를 응답 DTO로 변환
+     */
     public static ActivityLogResponse toResponse(ActivityLog activityLog) {
         return new ActivityLogResponse(
                 activityLog.getId(),
-                activityLog.getUser().getId(),
-                activityLog.getActionType().name(),
+                activityLog.getCreatedAt(),
+                getUserDisplayName(activityLog),
+                getActionTypeDisplay(activityLog.getActionType().name()),
                 activityLog.getEntityType().name(),
                 activityLog.getEntityId(),
-                activityLog.getDescription(),
-                activityLog.getOldValue(),
-                activityLog.getNewValue(),
-                createSecurityData(activityLog.getIpAddress(), activityLog.getUserAgent()),
-                activityLog.getCreatedAt(),
-                createUserInfo(activityLog.getUser())
-        );
-    }
-
-    public static SecurityDataDto createSecurityData(String ipAddress, String userAgent) {
-        String maskedIp = maskIpAddress(ipAddress);
-        String simplifiedBrowser = simplifyUserAgent(userAgent);
-        return new SecurityDataDto(maskedIp, simplifiedBrowser);
-    }
-
-    private static UserInfoDto createUserInfo(User user) {
-        return new UserInfoDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail()
+                activityLog.getDescription()
         );
     }
 
     /**
-     * IP 주소 마스킹 (개인정보보호)
-     * 192.168.1.100 -> 192.168.1.***
+     * 사용자 표시명 결정
      */
-    private static String maskIpAddress(String ipAddress) {
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            return "Unknown";
+    private static String getUserDisplayName(ActivityLog activityLog) {
+        if (activityLog.getUser() == null) {
+            return "알 수 없는 사용자";
         }
 
-        // IPv4 주소 마스킹
-        if (ipAddress.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
-            String[] parts = ipAddress.split("\\.");
-            if (parts.length == 4) {
-                return String.format("%s.%s.%s.***", parts[0], parts[1], parts[2]);
-            }
+        // name이 있으면 name 사용, 없으면 username 사용
+        String name = activityLog.getUser().getName();
+        if (name != null && !name.trim().isEmpty()) {
+            return name;
         }
 
-        // 기타 형식은 간단히 마스킹
-        return "***";
+        String username = activityLog.getUser().getUsername();
+        if (username != null && !username.trim().isEmpty()) {
+            return username;
+        }
+
+        return "알 수 없는 사용자";
     }
 
-    private static String simplifyUserAgent(String userAgent) {
-        if (userAgent == null || userAgent.trim().isEmpty()) {
-            return "Unknown";
-        }
-
-        String ua = userAgent.toLowerCase();
-
-        // 브라우저 감지 (간단한 버전)
-        if (ua.contains("chrome") && !ua.contains("edge")) {
-            return "Chrome";
-        } else if (ua.contains("firefox")) {
-            return "Firefox";
-        } else if (ua.contains("safari") && !ua.contains("chrome")) {
-            return "Safari";
-        } else if (ua.contains("edge")) {
-            return "Edge";
-        } else if (ua.contains("opera")) {
-            return "Opera";
-        }
-
-        return "Other";
+    /**
+     * 액션 타입 한글 표시명
+     */
+    private static String getActionTypeDisplay(String actionType) {
+        return switch (actionType) {
+            case "CREATE" -> "생성";
+            case "UPDATE" -> "수정";
+            case "DELETE" -> "삭제";
+            case "STATUS_CHANGE" -> "상태 변경";
+            case "LOGIN" -> "로그인";
+            default -> actionType;
+        };
     }
 
-
+    /**
+     * 엔티티 타입 한글 표시명
+     */
+    private static String getEntityTypeDisplay(String entityType) {
+        return switch (entityType) {
+            case "TASK" -> "작업";
+            case "COMMENT" -> "댓글";
+            case "USER" -> "사용자";
+            default -> entityType;
+        };
+    }
 }
