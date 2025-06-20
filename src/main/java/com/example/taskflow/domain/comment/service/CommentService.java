@@ -43,10 +43,10 @@ public class CommentService{
         return CommentResponseDto.commentResponsesDto(createcomment);
     }
 
-    public PageResponse<findUserNameResponseDto> findUserNameList(String content,Long taskId, Pageable pageables){
+    public PageResponse<findUserNameResponseDto> findUserNameList(Long taskId, Pageable pageables){
 
         PageRequest pageable = PageRequest.of(pageables.getPageNumber(),pageables.getPageSize(),Sort.by("createdAt").descending());
-        Page<Comment> commentPage = commentRepository.findByTaskIdAndContentContaining(taskId,content,pageable);
+        Page<Comment> commentPage = commentRepository.findByTaskIdAndIsDeletedFalse(taskId,pageable);
 
         return PageResponse.of(commentPage,findUserNameResponseDto::findUserNameDto);
 

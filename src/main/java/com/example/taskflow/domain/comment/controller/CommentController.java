@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/tasks")
+@RequestMapping
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping("/{taskId}/comments")
+    @PostMapping("/api/tasks/{taskId}/comments")
     public ResponseEntity<ApiResponse<CommentResponseDto>> signup
             (@PathVariable Long taskId,
              @Valid @RequestBody CommentRequestDto commentRequestDto,
@@ -37,19 +37,18 @@ public class CommentController {
                 commentResponseDto), HttpStatus.OK);
 
     }
-    @GetMapping("/{taskId}/comments")
+    @GetMapping("/api/tasks/{taskId}/comments")
     public ResponseEntity<ApiResponse<PageResponse<findUserNameResponseDto>>> findUserName
             (@PathVariable Long taskId,
-             Pageable pageable,
-             @RequestParam String content) {
+             Pageable pageable) {
         PageResponse<findUserNameResponseDto> responseDtoList =
-                commentService.findUserNameList(content,taskId,pageable);
+                commentService.findUserNameList(taskId,pageable);
 
         return new ResponseEntity<>(ApiResponse.success("댓글 목록을 조회했습니다.",responseDtoList),HttpStatus.OK);
 
     }
 
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/api/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentDeleteResponseDto>>deleteComment(
             @PathVariable Long commentId,
             @AuthenticationPrincipal User user) {
