@@ -40,13 +40,13 @@ public class CommentActivityLogAspect {
     public void commentServiceMethods() {}
 
     // TODO: 메서드명이 singup인데 signup으로 수정 필요 (오타)
-    @Pointcut("commentServiceMethods() && execution(* *..singup(..))")
+    @Pointcut("commentServiceMethods() && execution(* *..signup(..))")
     public void commentCreationMethods() {}
 
     @Pointcut("commentServiceMethods() && execution(* *..update*(..))")
     public void commentUpdateMethods() {}
 
-    @Pointcut("commentServiceMethods() && execution(* *..delete*(..))")
+    @Pointcut("commentServiceMethods() && execution(* *..deleteComment(..))")
     public void commentDeletionMethods() {}
 
     // ==================== 댓글 생성 ====================
@@ -55,7 +55,7 @@ public class CommentActivityLogAspect {
     public void logCommentCreation(JoinPoint joinPoint, Object result) {
         try {
             Object[] args = joinPoint.getArgs();
-            // TODO: CommentService.singup(Long id, String detail) 메서드 시그니처 확인 후 정확한 인자 위치 조정 필요
+            // TODO: CommentService.signup(Long id, String detail) 메서드 시그니처 확인 후 정확한 인자 위치 조정 필요
             Long taskId = extractTaskIdFromArgs(args);
 
             // result에서 댓글 ID 추출 시도
@@ -201,7 +201,7 @@ public class CommentActivityLogAspect {
      */
     private Long extractTaskIdFromArgs(Object[] args) {
         try {
-            // TODO: CommentService.singup(Long id, String detail) 확인 후 정확한 인덱스 조정
+            // TODO: CommentService.signup(Long id, String detail) 확인 후 정확한 인덱스 조정
             // 현재는 첫 번째 인자가 task ID라고 가정
             if (args.length >= 1 && args[0] instanceof Long) {
                 return (Long) args[0];
